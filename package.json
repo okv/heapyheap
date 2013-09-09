@@ -11,13 +11,17 @@
 		"time", "task", "ticket", "management", "todo"
 	],
 	"scripts": {
+		"compileTemplates": "jade-amd --from views/templates/ --to static/js/templates"
 	},
 	"dependencies": {
 		"mongodb": "1.3.19",
 		"twostep": "0.3.3",
-		"jade": "0.35.0",
-		"node-static": "0.7.1"
+		"node-static": "0.7.1",
+		"socket.io": "0.9.16",
+		"backbone.io": "0.4.0"
 	},
 	"devDependencies": {
+		"jade": "0.35.0",
+		"jade-amd": "0.1.0"
 	}
 }

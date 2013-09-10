@@ -3,7 +3,7 @@
 var http = require('http'),
 	Steppy = require('twostep').Steppy,
 	nodeStatic = require('node-static'),
-	socketIO = require('socket.io');
+	socketio = require('socket.io');
 
 var env = process.env.NODE_ENV || 'development',
 	conf = process.env.NODE_CONF || 'development',
@@ -17,7 +17,12 @@ var server = http.createServer(function(req, res) {
 	staticServer.serve(req, res);
 });
 
-var io = socketIO.listen(server);
+var io = socketio.listen(server);
+io.sockets.on('connection', function(socket) {
+	socket.on('login', function(login, password, callback) {
+		callback({login: 'spike'});
+	});
+});
 
 console.log(
 	'[app] Starting server on %s:%s',

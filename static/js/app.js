@@ -3,10 +3,10 @@
 requirejs.config({
 	baseUrl: '/js/lib',
 	paths: {
-		app: '../app'
+		app: '../app',
+		socketio: '/socket.io/socket.io.js'
 	},
 	shim: {
-		io: '/socket.io/socket.io.js',
 		underscore : {
 			exports : '_'
 		},

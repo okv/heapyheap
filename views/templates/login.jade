@@ -1,9 +1,8 @@
-extends index
 
-block body
+div(style="padding: 200px 200px 0px 250px;")
 	form.pure-form.pure-form-stacked
 		fieldset
 			legend Please enter login and password
-			input(type='text', placeholder='Login')
-			input(type='password', placeholder='Password')
-			button.pure-button.pure-button-primary(type='submit') Sign in
+			input#login(type='text', placeholder='Login')
+			input#password(type='password', placeholder='Password')
+			button#login-button.pure-button.pure-button-primary(type='button') Login

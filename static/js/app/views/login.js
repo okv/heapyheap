@@ -27,8 +27,12 @@ define([
 
 		View.render = function() {
 			this.$el.html(template.render('login'));
+			// dev autologin
+			// this.$('#login').val('spike');
+			// this.$('#password').val('gkpod');
+			// this.$('#login-button').click();
 		};
 
 		return backbone.View.extend(View);
-};
+	};
 });

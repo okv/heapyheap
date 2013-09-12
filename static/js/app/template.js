@@ -8,16 +8,20 @@
 define([
 	'underscore',
 	//preload all templates
-	'app/templates/login'
+	'app/templates/login', 'app/templates/tasks/index',
+	'app/templates/tasks/table', 'app/templates/tasks/tableRow'
 ], function(
 	_,
-	login
+	login, tasks, tasksTable, tasksTableRow
 ) {
 
 	var template = {};
 
 	template._hash = {
-		login: login
+		login: login,
+		tasks: tasks,
+		'tasks/table': tasksTable,
+		'tasks/tableRow': tasksTableRow
 	};
 
 	template.helpers = {};

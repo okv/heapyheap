@@ -14,9 +14,15 @@ var env = process.env.NODE_ENV || 'development',
 console.log('config:', conf);
 console.log('environment:', env);
 
-var staticServer = new nodeStatic.Server(__dirname + '/static')
+var staticServer = new nodeStatic.Server(__dirname + '/static'),
+	appPages = {'/login': 1, '/tasks': 1};
 var server = http.createServer(function(req, res) {
-	staticServer.serve(req, res);
+	// serve index for all app pages
+	if (req.url in appPages) {
+		staticServer.serveFile('/index.html', 200, {}, req, res);
+	} else {
+		staticServer.serve(req, res);
+	}
 });
 
 if (env == 'development') {

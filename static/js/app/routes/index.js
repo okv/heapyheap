@@ -24,12 +24,20 @@ require([
 			// override callback for redirect anonymous to login page
 			route.callback = function() {
 				if (!this.user && route.name != 'login') {
-					this.navigate('login', {trigger: true});
+					this.navigate('login');
 				} else {
 					oldCallback.apply(this, arguments);
 				}
 			}
 			superRoute.call(this, route.url, route.name, route.callback);
+		};
+		var superNavigate = backbone.Router.prototype.navigate;
+		// override `navigate` for `trigger` true by default
+		Router.navigate = function(fragment, options) {
+			options = _(options || {}).defaults({
+				trigger: true
+			});
+			superNavigate.call(this, fragment, options);
 		};
 		Router = backbone.Router.extend(Router);
 		var router = new Router();

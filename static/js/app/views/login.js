@@ -19,7 +19,7 @@ define([
 				this.$('#password').val(),
 				function(user) {
 					if (user.login) {
-						router.navigate('tasks', {trigger: true});
+						router.navigate('tasks');
 					}
 				}
 			);

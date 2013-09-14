@@ -6,9 +6,9 @@ define([], function() {
 	route.name = 'main';
 	route.callback = function() {
 		if (!this.user) {
-			this.navigate('login', {trigger: true});
+			this.navigate('login');
 		} else {
-			this.navigate('tasks', {trigger: true});
+			this.navigate('tasks');
 		}
 	};
 	return route;

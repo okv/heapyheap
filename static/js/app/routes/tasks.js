@@ -1,10 +1,12 @@
 'use strict';
 
 define([], function() {
-	return function(router) {
-		router.route('tasks', 'tasks', function() {
-			router.models.tasks.fetch();
-			router.views.tasks.render();
-		});
+	var route = {};
+	route.url = 'tasks';
+	route.name = 'tasks';
+	route.callback = function() {
+		this.models.tasks.fetch();
+		this.views.tasks.render();
 	};
+	return route;
 });

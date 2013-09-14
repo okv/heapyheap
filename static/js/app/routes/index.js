@@ -19,17 +19,17 @@ require([
 		var socket = backbone.io.connect();
 		var Router = {};
 		var superRoute = backbone.Router.prototype.route;
-		// override `route` for redirect anonymous to login page
-		Router.route = function(route, name, callback) {
-			var oldCallback = callback;
-			callback = function() {
-				if (!this.user && route != 'login') {
+		Router.route = function(route) {
+			var oldCallback = route.callback;
+			// override callback for redirect anonymous to login page
+			route.callback = function() {
+				if (!this.user && route.name != 'login') {
 					this.navigate('login', {trigger: true});
 				} else {
 					oldCallback.apply(this, arguments);
 				}
 			}
-			superRoute.call(this, route, name, callback);
+			superRoute.call(this, route.url, route.name, route.callback);
 		};
 		Router = backbone.Router.extend(Router);
 		var router = new Router();
@@ -47,9 +47,9 @@ require([
 				collection: router.models.tasks
 			})
 		};
-		main(router);
-		login(router);
-		tasks(router);
+		router.route(main);
+		router.route(login);
+		router.route(tasks);
 		Backbone.history.start({pushState: true});
 	});
 });

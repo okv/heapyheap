@@ -1,9 +1,11 @@
 'use strict';
 
 define([], function() {
-	return function(router) {
-		router.route('login', 'login', function() {
-			router.views.login.render();
-		});
+	var route = {};
+	route.url = 'login';
+	route.name = 'login';
+	route.callback = function() {
+		this.views.login.render();
 	};
+	return route;
 });

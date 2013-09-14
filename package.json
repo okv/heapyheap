@@ -11,6 +11,7 @@
 		"time", "task", "ticket", "management", "todo"
 	],
 	"scripts": {
+		"dev": "supervisor -i ./static/ --no-restart-on error app.js",
 		"compileTemplates": "jade-amd --from views/templates/ --to static/js/app/templates"
 	},
 	"dependencies": {
@@ -22,6 +23,7 @@
 	},
 	"devDependencies": {
 		"jade": "0.35.0",
-		"jade-amd": "0.1.0"
+		"jade-amd": "0.1.0",
+		"chokidar": "0.6.3"
 	}
 }

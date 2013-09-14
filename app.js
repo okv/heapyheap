@@ -4,7 +4,8 @@ var http = require('http'),
 	Steppy = require('twostep').Steppy,
 	nodeStatic = require('node-static'),
 	socketio = require('socket.io'),
-	backboneio = require('backbone.io');
+	backboneio = require('backbone.io'),
+	fs = require('fs');
 
 var env = process.env.NODE_ENV || 'development',
 	conf = process.env.NODE_CONF || 'development',
@@ -17,6 +18,38 @@ var staticServer = new nodeStatic.Server(__dirname + '/static')
 var server = http.createServer(function(req, res) {
 	staticServer.serve(req, res);
 });
+
+if (env == 'development') {
+	var chokidar = require('chokidar'),
+		path = require('path'),
+		exec = require('child_process').exec;
+	var templatesSrc = __dirname + '/views/templates',
+		templatesDst = __dirname + '/static/js/app/templates';
+	var compileTemplates = function() {
+		exec(
+			'node_modules/jade-amd/bin/jade-amd --from ' +
+			templatesSrc + ' --to ' + templatesDst,
+			function(err, stdout, stderr) {
+				if (stdout) console.log('stdout: ' + stdout);
+				if (stderr) console.log('stderr: ' + stderr);
+				if (err) throw err;
+			}
+		);
+	}
+	var compileTemplatesOnChanges = function(filepath, action) {
+		console.log(
+			'template %s %s', path.relative(templatesSrc, filepath), action
+		);
+		compileTemplates();
+	}
+	chokidar.watch(templatesSrc, {ignoreInitial: true})
+		.on('add', function(filepath) {
+			compileTemplatesOnChanges(filepath, 'added');
+		})
+		.on('change', function(filepath) {
+			compileTemplatesOnChanges(filepath, 'updated');
+		});
+}
 
 var backend = backboneio.createBackend();
 backend.use(function(req, res, next) {

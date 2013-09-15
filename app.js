@@ -96,6 +96,10 @@ backend.use('update', function(req, res, next) {
 	tasks[i] = req.model;
 	res.end(req.model);
 });
+// log backend errors
+backend.use(function(err, req, res, next) {
+	if (err) console.log(err.stack || err);
+});
 
 var io = backboneio.listen(server, {mybackend: backend});
 io.set('log level', 2);

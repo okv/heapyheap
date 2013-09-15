@@ -1,8 +1,29 @@
 'use strict';
 
-define(['backbone', 'app/template'], function(backbone, template) {
+define([
+	'backbone', 'app/template', 'underscore'
+], function(
+	backbone, template, _
+) {
 	return function(router) {
 		var View = {};
+
+		View.events = {
+			'change .task-filters': 'onFilterChange'
+		};
+
+		View.onFilterChange = function() {
+			var filters = {
+				project: this.$('#filter-project').val(),
+				version: this.$('#filter-version').val(),
+				assignee: this.$('#filter-assignee').val(),
+				status: this.$('#filter-status').val()
+			};
+			_(filters).each(function(val, key, obj) {
+				if (val === '') delete obj[key];
+			});
+			this.collection.fetch({data: filters});
+		};
 
 		View.initialize = function() {
 			var self = this;
@@ -17,6 +38,11 @@ define(['backbone', 'app/template'], function(backbone, template) {
 						template.render('tasks/tableRow', {task: model.toJSON()})
 					);
 				});
+			});
+			this.collection.on('remove', function(model) {
+				self.$(
+					'#tasks-table-body tr[data-task-id=' + model.get('id') + ']'
+				).remove();
 			});
 			this.collection.on('backend:update', function(model) {
 				this.get(model.id).set(model);
@@ -34,6 +60,7 @@ define(['backbone', 'app/template'], function(backbone, template) {
 
 		View.render = function() {
 			this.$el.html(template.render('tasks'));
+			this.$('.task-filters:first').change();
 		};
 
 		return backbone.View.extend(View);

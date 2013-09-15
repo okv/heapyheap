@@ -68,16 +68,24 @@ backend.use(function(req, res, next) {
 var tasks = [{
 	id: 1,
 	title: 'Create impressive design',
-	status: 'waiting'
+	status: 'in progress'
 }, {
 	id: 2,
 	title: 'Write awesome code',
-	status: 'waiting'
+	status: 'done'
 }];
+for (var i = 3; i <= 20; i++) {
+	tasks.push({id: i, title: 'Some task ' + i, status: 'waiting'});
+}
 backend.use('read', function(req, res, next) {
 	if (req.model.id) {
 	} else {
-		res.end(tasks);
+		var filters = req.options.data;
+		var filteredTasks = tasks.filter(function(task) {
+			return (!filters.status || filters.status == task.status ||
+				(filters.status == 'undone' && task.status != 'done'));
+		});
+		res.end(filteredTasks);
 	}
 });
 backend.use('update', function(req, res, next) {

@@ -3,14 +3,14 @@
 require([
 	'backbone', 'underscore',
 	'app/service',
-	'app/routes/main', 'app/routes/login', 'app/routes/tasks',
+	'app/routes/main', 'app/routes/login', 'app/routes/tasks', 'app/routes/task',
 	'app/views/index',
 	'app/models/tasks',
 	'jquery'
 ], function(
 	backbone, _,
 	Service,
-	main, login, tasks,
+	main, login, tasks, task,
 	views,
 	Tasks,
 	$
@@ -58,6 +58,7 @@ require([
 		router.route(main);
 		router.route(login);
 		router.route(tasks);
+		router.route(task);
 		Backbone.history.start({pushState: true});
 	});
 });

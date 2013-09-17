@@ -9,7 +9,8 @@ define([
 		var View = {};
 
 		View.events = {
-			'change .task-filters': 'onFilterChange'
+			'change .task-filters': 'onFilterChange',
+			'click #tasks-table-body tr': 'onSelectTask',
 		};
 
 		View.onFilterChange = function() {
@@ -23,6 +24,12 @@ define([
 				if (val === '') delete obj[key];
 			});
 			this.collection.fetch({data: filters});
+		};
+
+		View.onSelectTask = function(event) {
+			router.navigate(
+				'tasks/' + this.$(event.target).parent().data('task-id')
+			);
 		};
 
 		View.initialize = function() {

@@ -38,7 +38,7 @@ define([
 				self.$('#tasks-table-body').append(
 					template.render('tasks/tableRow', {task: model.toJSON()})
 				);
-				model.on('change', function(model) {
+				model.on('change:title, change:status', function(model) {
 					self.$(
 						'#tasks-table-body tr[data-task-id=' + model.get('id') + ']'
 					).replaceWith(
@@ -56,7 +56,7 @@ define([
 			});
 			// temporary
 			this.$el.on('click', '#task-change-status', function() {
-				var model = self.collection.get(2);
+				var model = self.collection.get(1);
 				model.set(
 					'status',
 					model.get('status') == 'waiting' ? 'in porgress' : 'waiting'

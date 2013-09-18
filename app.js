@@ -67,20 +67,30 @@ backend.use(function(req, res, next) {
 var tasks = [{
 	id: 1,
 	title: 'Create impressive design',
-	status: 'in progress'
+	status: 'in progress',
+	description: 'some description 1'
 }, {
 	id: 2,
 	title: 'Write awesome code',
-	status: 'done'
+	status: 'done',
+	description: 'some description 2'
 }];
-for (var i = 3; i <= 20; i++) {
+function clone(obj) {
+	return JSON.parse(JSON.stringify(obj));
+}
+for (var i = 3; i <= 8; i++) {
 	tasks.push({id: i, title: 'Some task ' + i, status: 'waiting'});
 }
 backend.use('read', function(req, res, next) {
 	if (req.model.id) {
+		var detailed = req.options.data && req.options.data.detailed;
+		if (detailed) res.end(tasks.filter(function(task) {
+			return task.id == req.model.id;
+		})[0]);
 	} else {
 		var filters = req.options.data;
-		var filteredTasks = tasks.filter(function(task) {
+		var filteredTasks = clone(tasks).filter(function(task) {
+			delete task.description;
 			return (!filters.status || filters.status == task.status ||
 				(filters.status == 'undone' && task.status != 'done'));
 		});

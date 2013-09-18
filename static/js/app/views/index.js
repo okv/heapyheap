@@ -1,12 +1,13 @@
 'use strict';
 
 define([
-	'app/views/login', 'app/views/tasks'
+	'app/views/login', 'app/views/tasks', 'app/views/task'
 ], function(
-	Login, Tasks
+	Login, Tasks, Task
 ) {
 	return {
 		Login: Login,
-		Tasks: Tasks
+		Tasks: Tasks,
+		Task: Task
 	};
 });

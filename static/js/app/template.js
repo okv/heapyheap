@@ -9,10 +9,12 @@ define([
 	'underscore',
 	//preload all templates
 	'app/templates/login', 'app/templates/tasks/index',
-	'app/templates/tasks/table', 'app/templates/tasks/tableRow'
+	'app/templates/tasks/table', 'app/templates/tasks/tableRow',
+	'app/templates/tasks/full'
 ], function(
 	_,
-	login, tasks, tasksTable, tasksTableRow
+	login, tasks, tasksTable, tasksTableRow,
+	tasksFull
 ) {
 
 	var template = {};
@@ -21,7 +23,8 @@ define([
 		login: login,
 		tasks: tasks,
 		'tasks/table': tasksTable,
-		'tasks/tableRow': tasksTableRow
+		'tasks/tableRow': tasksTableRow,
+		'tasks/full': tasksFull
 	};
 
 	template.helpers = {};

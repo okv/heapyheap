@@ -1,15 +1,16 @@
 'use strict';
 
+var env = process.env.NODE_ENV || 'development',
+	conf = process.env.NODE_CONF || 'development',
+	config = require('./config')(conf);
+
 var http = require('http'),
 	Steppy = require('twostep').Steppy,
 	nodeStatic = require('node-static'),
 	socketio = require('socket.io'),
 	backboneio = require('backbone.io'),
-	fs = require('fs');
+	db = require('./db');
 
-var env = process.env.NODE_ENV || 'development',
-	conf = process.env.NODE_CONF || 'development',
-	config = require('./config')(conf);
 
 console.log('config:', conf);
 console.log('environment:', env);
@@ -58,53 +59,64 @@ if (env == 'development') {
 
 var backend = backboneio.createBackend();
 backend.use(function(req, res, next) {
-	console.log(req.backend);
-	console.log(req.method);
-	console.log(JSON.stringify(req.model));
+	console.log('>>> backend:', req.backend);
+	console.log('>>> method:', req.method);
+	console.log('>>> model:', JSON.stringify(req.model));
 	next();
 });
 
-var tasks = [{
-	id: 1,
-	title: 'Create impressive design',
-	status: 'in progress',
-	description: 'some description 1'
-}, {
-	id: 2,
-	title: 'Write awesome code',
-	status: 'done',
-	description: 'some description 2'
-}];
-function clone(obj) {
-	return JSON.parse(JSON.stringify(obj));
-}
-for (var i = 3; i <= 8; i++) {
-	tasks.push({id: i, title: 'Some task ' + i, status: 'waiting'});
-}
 backend.use('read', function(req, res, next) {
 	if (req.model.id) {
+		console.log('>>> getting single: ', req.model.id);
 		var detailed = req.options.data && req.options.data.detailed;
-		if (detailed) res.end(tasks.filter(function(task) {
-			return task.id == req.model.id;
-		})[0]);
-	} else {
-		var filters = req.options.data;
-		var filteredTasks = clone(tasks).filter(function(task) {
-			delete task.description;
-			return (!filters.status || filters.status == task.status ||
-				(filters.status == 'undone' && task.status != 'done'));
+		if (detailed) db.tasks.get({id: req.model.id}, function(err, obj) {
+			if (err) return next(err);
+			res.end(obj);
 		});
-		res.end(filteredTasks);
+	} else {
+		var filters = req.options.data,
+			start = {},
+			end = {};
+		console.log('>>> getting list: ', filters);
+		if (filters.status) {
+			if (filters.status === 'undone') {
+				start.status = 'in progress';
+				end.status = 'waiting';
+			} else {
+				start.status = filters.status;
+			}
+		}
+		Steppy(
+			function() {
+				db.tasks.find({
+					start: start,
+					end: end,
+					limit: filters.limit
+				}, this.slot());
+			},
+			function(err, objs) {
+				var group = this.makeGroup();
+				objs.forEach(function(obj) {
+					// should find by `listInfo` (when get will supports `by`)
+					db.tasks.get({id: obj.id}, group.slot());
+				});
+			},
+			function(err, objs) {
+				console.log('>>> obj = ', objs[0])
+				res.end(objs);
+			},
+			next
+		);
 	}
 });
+
 backend.use('update', function(req, res, next) {
-	var i = 0;
-	while (i < tasks.length && tasks[i].id != req.model.id) {
-		i++;
-	}
-	tasks[i] = req.model;
-	res.end(req.model);
+	db.tasks.put(req.model, function(err) {
+		if (err) return next(err);
+		res.end(req.model);
+	});
 });
+
 // log backend errors
 backend.use(function(err, req, res, next) {
 	if (err) console.log(err.stack || err);

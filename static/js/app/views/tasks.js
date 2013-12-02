@@ -18,7 +18,8 @@ define([
 				project: this.$('#filter-project').val(),
 				version: this.$('#filter-version').val(),
 				assignee: this.$('#filter-assignee').val(),
-				status: this.$('#filter-status').val()
+				status: this.$('#filter-status').val(),
+				limit: 25
 			};
 			_(filters).each(function(val, key, obj) {
 				if (val === '') delete obj[key];

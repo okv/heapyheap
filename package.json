@@ -1,11 +1,11 @@
 {
-	"name": "heapyheap",
-	"description": "task and time management system for human beings",
+	"name": "nevermind",
+	"description": "easy way track tasks, time and collaborate",
 	"version": "0.1.0-alpha",
 	"author": "Oleg Korobenko <oleg.korobenko@gmail.com>",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/okv/heapyheap"
+		"url": "git://github.com/okv/nevermind"
 	},
 	"keywords": [
 		"time", "task", "ticket", "management", "todo"

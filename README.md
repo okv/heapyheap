@@ -1,5 +1,5 @@
-# heapyheap
+# nevermind
 
-heapyheap - task and time management system for human beings
+nevermind - easy way track tasks, time and collaborate
 
 work in progress...

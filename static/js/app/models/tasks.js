@@ -2,7 +2,7 @@
 
 define(['backbone', 'app/models/task'], function(backbone, Task) {
 	var Collection = {
-		backend: 'mybackend',
+		backend: 'tasks',
 		model: Task
 	};
 

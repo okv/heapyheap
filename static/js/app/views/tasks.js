@@ -19,7 +19,7 @@ define([
 				version: this.$('#filter-version').val(),
 				assignee: this.$('#filter-assignee').val(),
 				status: this.$('#filter-status').val(),
-				limit: 25
+				limit: 10
 			};
 			_(filters).each(function(val, key, obj) {
 				if (val === '') delete obj[key];

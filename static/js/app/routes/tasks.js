@@ -1,11 +1,18 @@
 'use strict';
 
-define([], function() {
+define(['underscore'], function(_) {
 	var route = {};
 	route.url = 'tasks';
 	route.name = 'tasks';
 	route.callback = function() {
-		this.views.tasks.render();
+		var self = this;
+		// fetch all required models
+		this.models.projects.fetch({
+			success: function() {
+				// render
+				self.views.tasks.render();
+			}
+		});
 	};
 	return route;
 });

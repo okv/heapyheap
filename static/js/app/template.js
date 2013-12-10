@@ -10,11 +10,11 @@ define([
 	//preload all templates
 	'app/templates/login', 'app/templates/tasks/index',
 	'app/templates/tasks/table', 'app/templates/tasks/tableRow',
-	'app/templates/tasks/full'
+	'app/templates/tasks/full', 'app/templates/ctrls/opts'
 ], function(
 	_,
 	login, tasks, tasksTable, tasksTableRow,
-	tasksFull
+	tasksFull, ctrlsOpts
 ) {
 
 	var template = {};
@@ -24,7 +24,8 @@ define([
 		tasks: tasks,
 		'tasks/table': tasksTable,
 		'tasks/tableRow': tasksTableRow,
-		'tasks/full': tasksFull
+		'tasks/full': tasksFull,
+		'ctrls/opts': ctrlsOpts
 	};
 
 	template.helpers = {};
@@ -32,7 +33,7 @@ define([
 
 	template.render = function(templateName, params) {
 		if (templateName in this._hash === false) {
-			throw new Error('Temlate not found: ' + templateName);
+			throw new Error('Template is not found: ' + templateName);
 		}
 		return this._hash[templateName](_(params || {}).extend(template.helpers));
 	};

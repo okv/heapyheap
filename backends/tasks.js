@@ -17,6 +17,10 @@ exports.bind = function(backend) {
 				start = {},
 				end = {};
 			console.log('>>> getting list: ', filters);
+			if (filters.project) start.fullVersion = filters.project;
+			if (filters.version && start.fullVersion) {
+				start.fullVersion += ' ' + filters.version;
+			}
 			if (filters.status) {
 				if (filters.status === 'undone') {
 					start.status = 'in progress';
@@ -55,5 +59,6 @@ exports.bind = function(backend) {
 			res.end(req.model);
 		});
 	});
+
 	return backend;
 }

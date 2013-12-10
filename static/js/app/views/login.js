@@ -18,9 +18,7 @@ define([
 				this.$('#login').val(),
 				this.$('#password').val(),
 				function(user) {
-					if (user.login) {
-						router.navigate('tasks');
-					}
+					if (user.login) router.navigate('tasks');
 				}
 			);
 		};

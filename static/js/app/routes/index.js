@@ -5,14 +5,14 @@ require([
 	'app/service',
 	'app/routes/main', 'app/routes/login', 'app/routes/tasks', 'app/routes/task',
 	'app/views/index',
-	'app/models/tasks',
+	'app/models/tasks', 'app/models/projects',
 	'jquery'
 ], function(
 	backbone, _,
 	Service,
 	main, login, tasks, task,
 	views,
-	Tasks,
+	Tasks, Projects,
 	$
 ) {
 	$(document).ready(function() {
@@ -31,6 +31,7 @@ require([
 			}
 			superRoute.call(this, route.url, route.name, route.callback);
 		};
+
 		var superNavigate = backbone.Router.prototype.navigate;
 		// override `navigate` for `trigger` true by default
 		Router.navigate = function(fragment, options) {
@@ -40,14 +41,18 @@ require([
 			superNavigate.call(this, fragment, options);
 		};
 		Router = backbone.Router.extend(Router);
+
 		var router = new Router();
 		router.user = null;
 		router.service = new Service({socket: socket});
 		router.service.onLogin = function(user) {
 			router.user = user;
 		};
+
 		router.models = {};
 		router.models.tasks = new Tasks();
+		router.models.projects = new Projects();
+
 		router.views = {
 			login: new (views.Login(router))({el: 'body'}),
 			tasks: new (views.Tasks(router))({
@@ -55,6 +60,7 @@ require([
 				collection: router.models.tasks
 			})
 		};
+
 		router.route(main);
 		router.route(login);
 		router.route(tasks);

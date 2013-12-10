@@ -2,12 +2,7 @@
 
 define(['backbone', 'app/models/task'], function(backbone, Task) {
 	var Collection = {
-		backend: 'tasks'
-		//model: Task
-	};
-
-	Collection.initialize = function() {
-		//this.bindBackend();
+		backend: 'projects'
 	};
 
 	return backbone.Collection.extend(Collection);

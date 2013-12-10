@@ -6,11 +6,14 @@ define([
 	backbone, template, _
 ) {
 	return function(router) {
+		var projects = router.models.projects;
+
 		var View = {};
 
 		View.events = {
 			'change .task-filters': 'onFilterChange',
 			'click #tasks-table-body tr': 'onSelectTask',
+			'change #filter-project': 'onProjectChange'
 		};
 
 		View.onFilterChange = function() {
@@ -31,6 +34,17 @@ define([
 			router.navigate(
 				'tasks/' + this.$(event.target).parent().data('task-id')
 			);
+		};
+
+		View.onProjectChange = function() {
+			var selProjectName = this.$('#filter-project').val(),
+				selProject = projects.find(function(project) {
+					return project.toJSON().name == selProjectName;
+				});
+			this.$('#filter-version').html(template.render('ctrls/opts', {
+				placeholder: 'Any version',
+				opts: selProject ? selProject.toJSON().versions : []
+			}));
 		};
 
 		View.initialize = function() {
@@ -64,10 +78,19 @@ define([
 				);
 				model.save();
 			});
+
 		};
 
 		View.render = function() {
 			this.$el.html(template.render('tasks'));
+
+			this.$('#filter-project').html(template.render('ctrls/opts', {
+				placeholder: 'Any project',
+				opts: projects.map(function(project) {
+					return project.toJSON().name;
+				})
+			}));
+
 			this.$('.task-filters:first').change();
 		};
 

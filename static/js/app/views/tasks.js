@@ -39,11 +39,11 @@ define([
 		View.onProjectChange = function() {
 			var selProjectName = this.$('#filter-project').val(),
 				selProject = projects.find(function(project) {
-					return project.toJSON().name == selProjectName;
+					return project.get('name') === selProjectName;
 				});
 			this.$('#filter-version').html(template.render('ctrls/opts', {
 				placeholder: 'Any version',
-				opts: selProject ? selProject.toJSON().versions : []
+				opts: selProject ? selProject.get('versions') : []
 			}));
 		};
 
@@ -74,7 +74,7 @@ define([
 				var model = self.collection.get(1);
 				model.set(
 					'status',
-					model.get('status') == 'waiting' ? 'in porgress' : 'waiting'
+					model.get('status') === 'waiting' ? 'in porgress' : 'waiting'
 				);
 				model.save();
 			});
@@ -87,7 +87,7 @@ define([
 			this.$('#filter-project').html(template.render('ctrls/opts', {
 				placeholder: 'Any project',
 				opts: projects.map(function(project) {
-					return project.toJSON().name;
+					return project.get('name');
 				})
 			}));
 

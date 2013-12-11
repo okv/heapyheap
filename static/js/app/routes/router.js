@@ -15,8 +15,9 @@ define(['backbone'], function(backbone, Task) {
 		var self = this,
 			oldCallback = route.callback;
 		route.callback = function() {
+			var args = arguments;
 			self.beforeRouteCallback(route, function() {
-				oldCallback.apply(self, arguments);
+				oldCallback.apply(self, args);
 			});
 		}
 		superRoute.call(this, route.url, route.name, route.callback);

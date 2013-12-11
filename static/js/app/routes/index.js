@@ -4,14 +4,14 @@ require([
 	'backbone', 'underscore',
 	'app/service', 'app/routes/router',
 	'app/routes/main', 'app/routes/login', 'app/routes/tasks', 'app/routes/task',
-	'app/views/index',
+	'app/views/login', 'app/views/tasks',
 	'app/models/tasks', 'app/models/projects',
 	'jquery'
 ], function(
 	backbone, _,
 	Service, Router,
 	main, login, tasks, task,
-	views,
+	loginView, tasksView,
 	Tasks, Projects,
 	$
 ) {
@@ -36,13 +36,12 @@ require([
 		router.models.tasks = new Tasks();
 		router.models.projects = new Projects();
 
-		router.views = {
-			login: new (views.Login(router))({el: 'body'}),
-			tasks: new (views.Tasks(router))({
-				el: 'body',
-				collection: router.models.tasks
-			})
-		};
+		router.views = {};
+		router.views.login = new (loginView(router))({el: 'body'});
+		router.views.tasks = new (tasksView(router))({
+			el: 'body',
+			collection: router.models.tasks
+		});
 
 		router.route(main);
 		router.route(login);

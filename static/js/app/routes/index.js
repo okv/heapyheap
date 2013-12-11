@@ -2,14 +2,14 @@
 
 require([
 	'backbone', 'underscore',
-	'app/service',
+	'app/service', 'app/routes/router',
 	'app/routes/main', 'app/routes/login', 'app/routes/tasks', 'app/routes/task',
 	'app/views/index',
 	'app/models/tasks', 'app/models/projects',
 	'jquery'
 ], function(
 	backbone, _,
-	Service,
+	Service, Router,
 	main, login, tasks, task,
 	views,
 	Tasks, Projects,
@@ -17,32 +17,15 @@ require([
 ) {
 	$(document).ready(function() {
 		var socket = backbone.io.connect();
-		var Router = {};
-		var superRoute = backbone.Router.prototype.route;
-		Router.route = function(route) {
-			var oldCallback = route.callback;
-			// override callback for redirect anonymous to login page
-			route.callback = function() {
-				if (!this.user && route.name != 'login') {
-					this.navigate('login');
-				} else {
-					oldCallback.apply(this, arguments);
-				}
-			}
-			superRoute.call(this, route.url, route.name, route.callback);
-		};
-
-		var superNavigate = backbone.Router.prototype.navigate;
-		// override `navigate` for `trigger` true by default
-		Router.navigate = function(fragment, options) {
-			options = _(options || {}).defaults({
-				trigger: true
-			});
-			superNavigate.call(this, fragment, options);
-		};
-		Router = backbone.Router.extend(Router);
 
 		var router = new Router();
+		router.beforeRouteCallback = function(route, callback) {
+			if (!this.user && route.name != 'login') {
+				this.navigate('login');
+			} else {
+				callback();
+			}
+		};
 		router.user = null;
 		router.service = new Service({socket: socket});
 		router.service.onLogin = function(user) {

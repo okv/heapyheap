@@ -1,6 +1,6 @@
 'use strict';
 
-define(['backbone', 'app/models/task'], function(backbone, Task) {
+define(['backbone'], function(backbone, Task) {
 	var Collection = {
 		backend: 'projects'
 	};

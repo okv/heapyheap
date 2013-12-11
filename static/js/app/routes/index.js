@@ -21,6 +21,7 @@ require([
 		var router = new Router();
 		router.beforeRouteCallback = function(route, callback) {
 			if (!this.user && route.name != 'login') {
+				this.returnUrl = window.location.pathname;
 				this.navigate('login');
 			} else {
 				callback();

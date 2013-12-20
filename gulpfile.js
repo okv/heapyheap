@@ -18,8 +18,9 @@ gulp.task('compileLess', function() {
 		.pipe(gulp.dest('static/css'))
 });
 
+var clientTemplatesSrc = 'views/templates/**/*.jade';
 gulp.task('compileClientTemplates', function() {
-	gulp.src('views/templates/**/*.jade')
+	gulp.src(clientTemplatesSrc)
 		.pipe(jade({client: true, compileDebug: false}))
 		.pipe(wrapAmd({
 			deps: ['jadeRuntime'],
@@ -41,6 +42,7 @@ gulp.task('default', function() {
 	});
 	// compile client side jade -> js on file changes
 	gulp.watch(['views/templates/**/*.jade'], function(event) {
+		if (event.type !== 'deleted') clientTemplatesSrc = event.path;
 		gulp.run('compileClientTemplates');
 	});
 });

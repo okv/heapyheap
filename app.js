@@ -25,39 +25,6 @@ var server = http.createServer(function(req, res) {
 	}
 });
 
-if (env == 'development') {
-	var chokidar = require('chokidar'),
-		path = require('path'),
-		exec = require('child_process').exec;
-	var templatesSrc = __dirname + '/views/templates',
-		templatesDst = __dirname + '/static/js/app/templates';
-	var compileTemplates = function() {
-		exec(
-			'node_modules/jade-amd/bin/jade-amd --from ' +
-			templatesSrc + ' --to ' + templatesDst,
-			function(err, stdout, stderr) {
-				if (stdout) console.log('stdout: ' + stdout);
-				if (stderr) console.log('stderr: ' + stderr);
-				if (err) throw err;
-			}
-		);
-	}
-	var compileTemplatesOnChanges = function(filepath, action) {
-		console.log(
-			'template %s %s', path.relative(templatesSrc, filepath), action
-		);
-		compileTemplates();
-	}
-	chokidar.watch(templatesSrc, {ignoreInitial: true})
-		.on('add', function(filepath) {
-			compileTemplatesOnChanges(filepath, 'added');
-		})
-		.on('change', function(filepath) {
-			compileTemplatesOnChanges(filepath, 'updated');
-		});
-}
-
-
 var backends = require('./backends'),
 	backendsHash = {};
 for (var name in backends) {
@@ -77,7 +44,6 @@ for (var name in backends) {
 		if (err) console.log(err.stack || err);
 	});
 }
-
 
 var io = backboneio.listen(server, backendsHash);
 io.set('log level', 2);

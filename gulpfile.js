@@ -18,9 +18,8 @@ gulp.task('compileLess', function() {
 		.pipe(gulp.dest('static/css'))
 });
 
-var clientTemplatesSrc = 'views/templates/**/*.jade';
 gulp.task('compileClientTemplates', function() {
-	gulp.src(clientTemplatesSrc)
+	gulp.src('views/templates/**/*.jade')
 		.pipe(jade({client: true, compileDebug: false}))
 		.pipe(wrapAmd({
 			deps: ['jadeRuntime'],
@@ -33,16 +32,15 @@ gulp.task('default', function() {
 	// run tasks at gulp start
 	gulp.run('runServer', 'compileClientTemplates', 'compileLess');
 	// compile less -> css on file changes
-	gulp.watch(['static/css/**/*.less'], function(event) {
+	gulp.watch(['static/css/**/*.less'], function() {
 		gulp.run('compileLess');
 	});
 	// restart server on file changes
-	gulp.watch(['**/*.js', '!static/**'], function(event) {
+	gulp.watch(['**/*.js', '!static/**'], function() {
 		gulp.run('runServer');
 	});
 	// compile client side jade -> js on file changes
-	gulp.watch(['views/templates/**/*.jade'], function(event) {
-		if (event.type !== 'deleted') clientTemplatesSrc = event.path;
+	gulp.watch(['views/templates/**/*.jade'], function() {
 		gulp.run('compileClientTemplates');
 	});
 });

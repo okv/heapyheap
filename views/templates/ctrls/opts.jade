@@ -3,4 +3,4 @@ if placeholder
 	option(value="") #{placeholder}
 
 each opt in opts
-	option(value="#{opt}") #{opt}
+	option(value="#{opt}", selected=(opt === selected)) #{opt}

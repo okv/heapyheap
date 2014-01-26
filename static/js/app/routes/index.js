@@ -20,13 +20,37 @@ require([
 
 		var router = new Router();
 		router.beforeRouteCallback = function(route, callback) {
-			if (!this.user && route.name != 'login') {
-				this.returnUrl = window.location.pathname;
+			console.log('>>> before route = ', route.name)
+			if (!this.user && route.name !== 'login') {
+				this.returnUrl = window.location.pathname + window.location.search;
 				this.navigate('login');
+			} else if (this.user && route.name !== 'login') {
+				afterLogin(callback);
 			} else {
 				callback();
 			}
 		};
+		// some global initialization after user logged in
+		var isAfterLoginCalled = false;
+		function afterLogin(callback) {
+			if (!isAfterLoginCalled) {
+				isAfterLoginCalled = true;
+				router.models.tasks = new Tasks();
+				router.models.projects = new Projects();
+				callback = _.after(1, callback);
+				// fetch all models which will be synced in backgroud during all
+				// app life cycle
+				router.models.projects.fetch({success: callback});
+				// init some views
+				router.views.tasks = new (tasksView(router))({
+					el: 'body',
+					collection: router.models.tasks
+				});
+			} else {
+				callback();
+			}
+		};
+
 		router.user = null;
 		router.service = new Service({socket: socket});
 		router.service.onLogin = function(user) {
@@ -34,15 +58,8 @@ require([
 		};
 
 		router.models = {};
-		router.models.tasks = new Tasks();
-		router.models.projects = new Projects();
-
 		router.views = {};
 		router.views.login = new (loginView(router))({el: 'body'});
-		router.views.tasks = new (tasksView(router))({
-			el: 'body',
-			collection: router.models.tasks
-		});
 
 		router.route(main);
 		router.route(login);

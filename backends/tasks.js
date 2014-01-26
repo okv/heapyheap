@@ -13,10 +13,11 @@ exports.bind = function(backend) {
 				res.end(obj);
 			});
 		} else {
-			var filters = req.options.data,
+			var filters = req.options.data || {},
 				start = {},
 				end = {};
 			console.log('>>> getting list: ', filters);
+			if (!filters.limit) filters.limit = 10;
 			if (filters.project) start.fullVersion = filters.project;
 			if (filters.version && start.fullVersion) {
 				start.fullVersion += ' ' + filters.version;

@@ -24,8 +24,9 @@ define(['backbone'], function(backbone, Task) {
 	};
 
 	var superNavigate = backbone.Router.prototype.navigate;
-	// override `navigate` for `trigger` true by default
+	// override `navigate`
 	Router.navigate = function(fragment, options) {
+		// set `trigger` to true by default
 		options = _(options || {}).defaults({
 			trigger: true
 		});

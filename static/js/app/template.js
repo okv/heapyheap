@@ -10,10 +10,11 @@ define([
 	//preload all templates
 	'app/templates/login', 'app/templates/tasks/index',
 	'app/templates/tasks/table', 'app/templates/tasks/tableRow',
+	'app/templates/tasks/tableRows',
 	'app/templates/tasks/full', 'app/templates/ctrls/opts'
 ], function(
 	_,
-	login, tasks, tasksTable, tasksTableRow,
+	login, tasksIndex, tasksTable, tasksTableRow, tasksTableRows,
 	tasksFull, ctrlsOpts
 ) {
 
@@ -21,9 +22,10 @@ define([
 
 	template._hash = {
 		login: login,
-		tasks: tasks,
+		'tasks/index': tasksIndex,
 		'tasks/table': tasksTable,
 		'tasks/tableRow': tasksTableRow,
+		'tasks/tableRows': tasksTableRows,
 		'tasks/full': tasksFull,
 		'ctrls/opts': ctrlsOpts
 	};

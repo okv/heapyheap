@@ -18,10 +18,9 @@ exports.bind = function(backend) {
 				end = {};
 			console.log('>>> getting list: ', filters);
 			if (!filters.limit) filters.limit = 10;
-			if (filters.project) start.fullVersion = filters.project;
-			if (filters.version && start.fullVersion) {
-				start.fullVersion += ' ' + filters.version;
-			}
+			if (filters.project) start.project = filters.project;
+			if (filters.version) start.version = filters.version;
+			if (filters.assignee) start.assignee = filters.assignee;
 			if (filters.status) {
 				if (filters.status === 'undone') {
 					start.status = 'in progress';
@@ -30,6 +29,7 @@ exports.bind = function(backend) {
 					start.status = filters.status;
 				}
 			}
+			console.log('>>> start = ', start, end)
 			Steppy(
 				function() {
 					db.tasks.find({

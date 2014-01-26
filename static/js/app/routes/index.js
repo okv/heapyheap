@@ -5,14 +5,14 @@ require([
 	'app/service', 'app/routes/router',
 	'app/routes/main', 'app/routes/login', 'app/routes/tasks', 'app/routes/task',
 	'app/views/login', 'app/views/tasks',
-	'app/models/tasks', 'app/models/projects',
+	'app/models/tasks', 'app/models/projects', 'app/models/users',
 	'jquery'
 ], function(
 	backbone, _,
 	Service, Router,
 	main, login, tasks, task,
 	loginView, tasksView,
-	Tasks, Projects,
+	Tasks, Projects, Users,
 	$
 ) {
 	$(document).ready(function() {
@@ -37,10 +37,12 @@ require([
 				isAfterLoginCalled = true;
 				router.models.tasks = new Tasks();
 				router.models.projects = new Projects();
-				callback = _.after(1, callback);
+				router.models.users = new Users();
+				callback = _.after(2, callback);
 				// fetch all models which will be synced in backgroud during all
 				// app life cycle
 				router.models.projects.fetch({success: callback});
+				router.models.users.fetch({success: callback});
 				// init some views
 				router.views.tasks = new (tasksView(router))({
 					el: 'body',

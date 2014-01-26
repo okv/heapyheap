@@ -6,7 +6,8 @@ define([
 	backbone, template, _
 ) {
 	return function(router) {
-		var projects = router.models.projects;
+		var projects = router.models.projects,
+			users = router.models.users;
 
 		var View = {};
 
@@ -95,6 +96,16 @@ define([
 			}));
 		};
 
+		View.renderAssignees = function(selected) {
+			this.$('#filter-assignee').html(template.render('ctrls/opts', {
+				placeholder: 'Any assignee',
+				opts: users.map(function(user) {
+					return user.get('username');
+				}),
+				selected: selected
+			}));
+		};
+
 		View.renderTableRows = function() {
 			this.$('#tasks-table-body').html(template.render('tasks/tableRows', {
 				tasks: this.collection.toJSON()
@@ -105,6 +116,7 @@ define([
 			this.$el.html(template.render('tasks/index'));
 			this.renderProjects(filters.project);
 			this.renderVersions(filters.version);
+			this.renderAssignees(filters.assignee);
 			this.$('#filter-status').val(filters.status);
 			this.onFilterChange();
 		};

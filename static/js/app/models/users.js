@@ -2,7 +2,7 @@
 
 define(['backbone'], function(backbone) {
 	var Collection = {
-		backend: 'projects'
+		backend: 'users'
 	};
 
 	return backbone.Collection.extend(Collection);

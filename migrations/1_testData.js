@@ -17,23 +17,27 @@ exports.migrate = function(client, done) {
 			for (var i = 0; i < 10; i++) {
 				var project = {name: 'project ' + i, versions: []};
 				for (var j = 0; j < 5; j++) {
-					var version = '0.' + j + '.0',
-						fullVersion = project.name + ' ' + version;
+					var version = '0.' + j + '.0';
 					project.versions.push(version);
 					for (var k = 0; k < 200; k++) {
-						tasks.push({
+						var task = {
 							id: tasks.length + 1,
-							title: 'task ' + k + ' at ' + fullVersion,
-							fullVersion: fullVersion,
+							project: project.name,
+							version: version,
 							assignee: getRandomItem(assignees),
 							status: getRandomItem(statuses)
-						});
+						};
+						task.title = 'task #' + task.id;
+						tasks.push(task);
 					}
 				}
 				projects.push(project);
 			}
 			db.tasks.put(tasks, this.slot());
 			db.projects.put(projects, this.slot());
+			db.users.put(assignees.map(function(assignee) {
+				return {username: assignee};
+			}), this.slot());
 		},
 		done
 	);

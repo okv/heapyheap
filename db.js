@@ -6,9 +6,17 @@ var nlevel = require('nlevel'),
 
 exports.tasks = new nlevel.DocsSection(ldb, 'tasks', {
 	projections: [
-		// fullVersion - e.g. 2do2go 4.0.1
-		{key: {fullVersion: 1, assignee: 1, status: 1, id: 1}, value: pickId},
-		{key: {fullVersion: 1, status: 1, id: 1}, value: pickId},
+		// some combinations with `id` goes first for sort by id when some
+		// parameterss are not set
+		{key: {project: 1, id: 1}, value: pickId},
+		{key: {project: 1, version: 1, id: 1}, value: pickId},
+		{key: {project: 1, version: 1, assignee: 1, id: 1}, value: pickId},
+		{key: {project: 1, assignee: 1, id: 1}, value: pickId},
+
+		{key: {project: 1, version: 1, assignee: 1, status: 1, id: 1}, value: pickId},
+		{key: {project: 1, assignee: 1, status: 1, id: 1}, value: pickId},
+		{key: {project: 1, status: 1, id: 1}, value: pickId},
+		{key: {project: 1, version: 1, status: 1, id: 1}, value: pickId},
 		{key: {assignee: 1, status: 1, id: 1}, value: pickId},
 		{key: {status: 1, id: 1}, value: pickId},
 		{id: 'listInfo', key: {id: 1}, value: function(task) {
@@ -22,3 +30,4 @@ function pickId(doc) {
 }
 
 exports.projects = new nlevel.ValSection(ldb, 'projects');
+exports.users = new nlevel.ValSection(ldb, 'users');

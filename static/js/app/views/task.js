@@ -33,10 +33,12 @@ define([
 			this.$el.html(template.render('tasks/full', {
 				task: this.model.toJSON()
 			}));
+			return this;
 		};
 
 		var superOff =  backbone.View.prototype.off;
 		View.off = function() {
+			// TODO: add base with default `off` ($el.off())
 			this.$el.off();
 			this.model.off('change:status', this.onModelChange, this);
 			superOff.call(this);

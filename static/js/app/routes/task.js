@@ -5,12 +5,19 @@ define(['app/views/task'], function(task) {
 	route.url = 'tasks/:id';
 	route.name = 'task';
 	route.callback = function(id) {
-		if (this.views.task) this.views.task.unbind();
-		this.views.task = new (task(this))({
-			el: '#task-full',
-			model: this.models.tasks.get(id)
-		});
-		this.views.task.render();
+		var self = this;
+		if (this.views.task) this.views.task.off();
+		// TODO: add method for instaces creation
+		var model = new this.models.tasks.model({id: id});
+		this.models.tasks._prepareModel(model);
+		// always fetch latest model from server before viewing it
+		model.fetch({success: function(model) {
+			self.views.task = new (task(self))({
+				el: '#task-full',
+				model: model
+			});
+			self.views.task.render();
+		}});
 	};
 	return route;
 });

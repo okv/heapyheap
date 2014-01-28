@@ -5,15 +5,17 @@ var Steppy = require('twostep').Steppy,
 
 exports.bind = function(backend) {
 	backend.use('read', function(req, res, next) {
-		if (req.model.id) {
-			console.log('>>> getting single: ', req.model.id);
-			var detailed = req.options.data && req.options.data.detailed;
-			if (detailed) db.tasks.get({id: req.model.id}, function(err, obj) {
+		var data = req.options.data || {},
+			id = req.model.id || data.id;
+		if (id) {
+			console.log('>>> getting single: ', id);
+			db.tasks.get({id: id}, function(err, obj) {
 				if (err) return next(err);
+				console.log('>>> getting single: ', obj);
 				res.end(obj);
 			});
 		} else {
-			var filters = req.options.data || {},
+			var filters = data,
 				start = {},
 				end = {};
 			console.log('>>> getting list: ', filters);

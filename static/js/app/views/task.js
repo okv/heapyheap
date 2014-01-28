@@ -9,31 +9,24 @@ define([
 		var View = {};
 
 		View.initialize = function() {
-			var self = this,
-				model = this.model;
-			model.on('change:status', this.onModelChange, this);
+			this.model.on('change:status', this.onModelChange, this);
 		};
 
 		View.onModelChange = function(model) {
 			//TODO: pass to view only changed attributes
-			this.$el.html(template.render('tasks/full', {task: model.toJSON()}));
+			this.render();
 		};
 
 		View.render = function() {
-			var self = this,
-				model = this.model;
-			model.once('sync', function(model) {
-				self.$el.html(template.render('tasks/full', {
-					task: model.toJSON()
-				}));
-			});
-			model.fetch({data: {detailed: true}});
+			this.$el.html(template.render('tasks/full', {
+				task: this.model.toJSON()
+			}));
 		};
 
-		var superUnbind =  backbone.View.prototype.unbind;
-		View.unbind = function() {
+		var superOff =  backbone.View.prototype.off;
+		View.off = function() {
 			this.model.off('change:status', this.onModelChange, this);
-			superUnbind.call(this);
+			superOff.call(this);
 		};
 
 		return backbone.View.extend(View);

@@ -57,16 +57,6 @@ define([
 			this.collection.on('backend:update', function(model) {
 				this.get(model.id).set(model);
 			});
-			// temporary
-			this.$el.on('click', '#task-change-status', function() {
-				var model = self.collection.get(1);
-				model.set(
-					'status',
-					model.get('status') === 'waiting' ? 'in porgress' : 'waiting'
-				);
-				model.save();
-			});
-
 		};
 
 		View.onProjectChange = function() {

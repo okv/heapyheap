@@ -8,8 +8,20 @@ define([
 	return function(router) {
 		var View = {};
 
+		View.events = {
+			'click #task-change-status': 'onTaskChangeStatusButtonClick'
+		};
+
 		View.initialize = function() {
 			this.model.on('change:status', this.onModelChange, this);
+		};
+
+		View.onTaskChangeStatusButtonClick = function() {
+			this.model.set(
+				'status',
+				this.model.get('status') === 'waiting' ? 'in porgress' : 'waiting'
+			);
+			this.model.save();
 		};
 
 		View.onModelChange = function(model) {
@@ -25,6 +37,7 @@ define([
 
 		var superOff =  backbone.View.prototype.off;
 		View.off = function() {
+			this.$el.off();
 			this.model.off('change:status', this.onModelChange, this);
 			superOff.call(this);
 		};

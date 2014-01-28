@@ -7,11 +7,15 @@ define(['app/views/task'], function(task) {
 	route.callback = function(id) {
 		var self = this;
 		if (this.views.task) this.views.task.off();
-		// TODO: add method for instaces creation
-		var model = new this.models.tasks.model({id: id});
-		this.models.tasks._prepareModel(model);
+		var model = this.models.tasks.get(id);
+		if (!model) {
+			// TODO: add method for instaces creation
+			model = new this.models.tasks.model({id: id});
+			this.models.tasks._prepareModel(model);
+		}
 		// always fetch latest model from server before viewing it
 		model.fetch({success: function(model) {
+			console.log('>>> fetched model = ', model.toJSON())
 			self.views.task = new (task(self))({
 				el: '#task-full',
 				model: model

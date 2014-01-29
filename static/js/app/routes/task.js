@@ -7,7 +7,7 @@ define(['app/views/task'], function(TaskView) {
 	var view = null;
 	route.callback = function(id) {
 		var self = this;
-		if (view) view.off();
+		if (view) view.detach();
 		var model = this.collections.tasks.get(id);
 		if (!model) {
 			// TODO: add method for instaces creation

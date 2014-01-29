@@ -9,7 +9,7 @@ define(['app/views/base'], function(ParentView) {
 
 	View.initialize = function() {
 		ParentView.prototype.initialize.apply(this, arguments);
-		this.model.on('change:status', this.onModelChange, this);
+		this.listenTo(this.model, 'change:status', this.onModelChange);
 	};
 
 	View.onTaskChangeStatusButtonClick = function() {
@@ -30,12 +30,6 @@ define(['app/views/base'], function(ParentView) {
 			task: this.model.toJSON()
 		}));
 		return this;
-	};
-
-	var superOff =  ParentView.prototype.off;
-	View.off = function() {
-		this.model.off('change:status', this.onModelChange, this);
-		superOff.call(this);
 	};
 
 	return ParentView.extend(View);

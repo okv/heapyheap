@@ -6,7 +6,6 @@ define(['backbone', 'app/template'], function(backbone, template) {
 	var View = {};
 
 	View.initialize = function() {
-		console.log('>>> base view initialize')
 	};
 
 	View._render = function(templateName, params) {
@@ -17,10 +16,10 @@ define(['backbone', 'app/template'], function(backbone, template) {
 		return this.router.navigate(fragment, options);
 	};
 
-	var parentOff =  ParentView.prototype.off;
-	View.off = function() {
-		this.$el.off();
-		parentOff.call(this);
+	View.detach = function() {
+		this.undelegateEvents();
+		this.stopListening();
+		return this;
 	};
 
 	return backbone.View.extend(View);

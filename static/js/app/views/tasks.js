@@ -31,19 +31,18 @@ define(['app/views/base'], function(ParentView) {
 
 	View.initialize = function() {
 		ParentView.prototype.initialize.apply(this, arguments);
-		var self = this;
-		// sync tasks which changed remotely
-		this.collection.on('add', function(model) {
-			model.on('change:title, change:status', function(model) {
-				self.$(
+		this.listenTo(this.collection, 'add', function(model) {
+			this.listenTo(model, 'change:title, change:status', function(model) {
+				this.$(
 					'#tasks-table-body tr[data-task-id=' + model.get('id') + ']'
 				).replaceWith(
-					self._render('tasks/tableRow', {task: model.toJSON()})
+					this._render('tasks/tableRow', {task: model.toJSON()})
 				);
 			});
 		});
-		this.collection.on('backend:update', function(model) {
-			this.get(model.id).set(model);
+		// sync tasks which changed remotely
+		this.listenTo(this.collection, 'backend:update', function(model) {
+			this.collection.get(model.id).set(model);
 		});
 	};
 

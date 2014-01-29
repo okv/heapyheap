@@ -13,6 +13,10 @@ define(['backbone', 'app/template'], function(backbone, template) {
 		return template.render(templateName, params);
 	};
 
+	View.navigate = function(fragment, options) {
+		return this.router.navigate(fragment, options);
+	};
+
 	var parentOff =  ParentView.prototype.off;
 	View.off = function() {
 		this.$el.off();

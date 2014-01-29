@@ -17,15 +17,14 @@ define(['app/views/base'], function(ParentView) {
 			status: this.$('#filter-status').val()
 		};
 		var self = this;
-		// TODO: move `toFragment` call to `navigate`
-		this.router.navigate('tasks', {trigger: false, qs: filters});
+		this.navigate('tasks', {trigger: false, qs: filters});
 		this.collection.fetch({data: filters, success: function() {
 			self.renderTableRows();
 		}});
 	};
 
 	View.onSelectTask = function(event) {
-		this.router.navigate(
+		this.navigate(
 			'tasks/' + this.$(event.target).parent().data('task-id')
 		);
 	};

@@ -4,14 +4,14 @@ require([
 	'backbone', 'underscore',
 	'app/service', 'app/routes/router',
 	'app/routes/main', 'app/routes/login', 'app/routes/tasks', 'app/routes/task',
-	'app/views/login', 'app/views/tasks',
+	'app/views/base', 'app/views/login', 'app/views/tasks',
 	'app/models/tasks', 'app/models/projects', 'app/models/users',
 	'jquery'
 ], function(
 	backbone, _,
 	Service, Router,
 	main, login, tasks, task,
-	loginView, tasksView,
+	BaseView, LoginView, TasksView,
 	Tasks, Projects, Users,
 	$
 ) {
@@ -35,18 +35,18 @@ require([
 		function afterLogin(callback) {
 			if (!isAfterLoginCalled) {
 				isAfterLoginCalled = true;
-				router.models.tasks = new Tasks();
-				router.models.projects = new Projects();
-				router.models.users = new Users();
+				router.collections.tasks = new Tasks();
+				router.collections.projects = new Projects();
+				router.collections.users = new Users();
 				callback = _.after(2, callback);
 				// fetch all models which will be synced in backgroud during all
 				// app life cycle
-				router.models.projects.fetch({success: callback});
-				router.models.users.fetch({success: callback});
+				router.collections.projects.fetch({success: callback});
+				router.collections.users.fetch({success: callback});
 				// init some views
-				router.views.tasks = new (tasksView(router))({
+				router.views.tasks = new TasksView({
 					el: 'body',
-					collection: router.models.tasks
+					collection: router.collections.tasks
 				});
 			} else {
 				callback();
@@ -59,9 +59,12 @@ require([
 			router.user = user;
 		};
 
-		router.models = {};
+		router.collections = {};
 		router.views = {};
-		router.views.login = new (loginView(router))({el: 'body'});
+		router.views.login = new LoginView({el: 'body'});
+
+		BaseView.prototype.router = router;
+		BaseView.prototype.collections = router.collections;
 
 		router.route(main);
 		router.route(login);

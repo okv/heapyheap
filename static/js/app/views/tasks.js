@@ -1,116 +1,108 @@
 'use strict';
 
-define([
-	'backbone', 'app/template', 'underscore'
-], function(
-	backbone, template, _
-) {
-	return function(router) {
-		var projects = router.models.projects,
-			users = router.models.users;
+define(['app/views/base', 'underscore'], function(ParentView, _) {
+	var View = {};
 
-		var View = {};
+	View.events = {
+		'change #filter-project': 'onProjectChange',
+		'change #filter-version,#filter-assignee,#filter-status': 'onFilterChange',
+		'click #tasks-table-body tr': 'onSelectTask'
+	};
 
-		View.events = {
-			'change #filter-project': 'onProjectChange',
-			'change #filter-version,#filter-assignee,#filter-status': 'onFilterChange',
-			'click #tasks-table-body tr': 'onSelectTask'
+	View.onFilterChange = function() {
+		var filters = {
+			project: this.$('#filter-project').val(),
+			version: this.$('#filter-version').val(),
+			assignee: this.$('#filter-assignee').val(),
+			status: this.$('#filter-status').val()
 		};
+		var self = this;
+		// TODO: move filter of falsy value to `navigate`
+		_(filters).each(function(val, key, obj) {
+			if (val === '') delete obj[key];
+		});
+		// TODO: move `toFragment` call to `navigate`
+		this.router.navigate(this.router.toFragment('tasks', filters), {trigger: false});
+		this.collection.fetch({data: filters, success: function() {
+			self.renderTableRows();
+		}});
+	};
 
-		View.onFilterChange = function() {
-			var filters = {
-				project: this.$('#filter-project').val(),
-				version: this.$('#filter-version').val(),
-				assignee: this.$('#filter-assignee').val(),
-				status: this.$('#filter-status').val()
-			};
-			var self = this;
-			// TODO: move filter of falsy value to `navigate`
-			_(filters).each(function(val, key, obj) {
-				if (val === '') delete obj[key];
+	View.onSelectTask = function(event) {
+		this.router.navigate(
+			'tasks/' + this.$(event.target).parent().data('task-id')
+		);
+	};
+
+	View.initialize = function() {
+		ParentView.prototype.initialize.apply(this, arguments);
+		var self = this;
+		// sync tasks which changed remotely
+		this.collection.on('add', function(model) {
+			model.on('change:title, change:status', function(model) {
+				self.$(
+					'#tasks-table-body tr[data-task-id=' + model.get('id') + ']'
+				).replaceWith(
+					self._render('tasks/tableRow', {task: model.toJSON()})
+				);
 			});
-			// TODO: move `toFragment` call to `navigate`
-			router.navigate(router.toFragment('tasks', filters), {trigger: false});
-			this.collection.fetch({data: filters, success: function() {
-				self.renderTableRows();
-			}});
-		};
+		});
+		this.collection.on('backend:update', function(model) {
+			this.get(model.id).set(model);
+		});
+	};
 
-		View.onSelectTask = function(event) {
-			router.navigate(
-				'tasks/' + this.$(event.target).parent().data('task-id')
-			);
-		};
+	View.onProjectChange = function() {
+		this.renderVersions();
+		this.$('#filter-version').change();
+	};
 
-		View.initialize = function() {
-			var self = this;
-			// sync tasks which changed remotely
-			this.collection.on('add', function(model) {
-				model.on('change:title, change:status', function(model) {
-					self.$(
-						'#tasks-table-body tr[data-task-id=' + model.get('id') + ']'
-					).replaceWith(
-						template.render('tasks/tableRow', {task: model.toJSON()})
-					);
-				});
+	View.renderProjects = function(selected) {
+		this.$('#filter-project').html(this._render('ctrls/opts', {
+			placeholder: 'Any project',
+			opts: this.collections.projects.map(function(project) {
+				return project.get('name');
+			}),
+			selected: selected
+		}));
+	};
+
+	View.renderVersions = function(selected) {
+		var selProjectName = this.$('#filter-project').val(),
+			selProject = this.collections.projects.find(function(project) {
+				return project.get('name') === selProjectName;
 			});
-			this.collection.on('backend:update', function(model) {
-				this.get(model.id).set(model);
-			});
-		};
+		this.$('#filter-version').html(this._render('ctrls/opts', {
+			placeholder: 'Any version',
+			opts: selProject ? selProject.get('versions') : [],
+			selected: selected
+		}));
+	};
 
-		View.onProjectChange = function() {
-			this.renderVersions();
-			this.$('#filter-version').change();
-		};
+	View.renderAssignees = function(selected) {
+		this.$('#filter-assignee').html(this._render('ctrls/opts', {
+			placeholder: 'Any assignee',
+			opts: this.collections.users.map(function(user) {
+				return user.get('username');
+			}),
+			selected: selected
+		}));
+	};
 
-		View.renderProjects = function(selected) {
-			this.$('#filter-project').html(template.render('ctrls/opts', {
-				placeholder: 'Any project',
-				opts: projects.map(function(project) {
-					return project.get('name');
-				}),
-				selected: selected
-			}));
-		};
+	View.renderTableRows = function() {
+		this.$('#tasks-table-body').html(this._render('tasks/tableRows', {
+			tasks: this.collection.toJSON()
+		}));
+	};
 
-		View.renderVersions = function(selected) {
-			var selProjectName = this.$('#filter-project').val(),
-				selProject = projects.find(function(project) {
-					return project.get('name') === selProjectName;
-				});
-			this.$('#filter-version').html(template.render('ctrls/opts', {
-				placeholder: 'Any version',
-				opts: selProject ? selProject.get('versions') : [],
-				selected: selected
-			}));
-		};
+	View.render = function(filters) {
+		this.$el.html(this._render('tasks/index'));
+		this.renderProjects(filters.project);
+		this.renderVersions(filters.version);
+		this.renderAssignees(filters.assignee);
+		this.$('#filter-status').val(filters.status);
+		this.onFilterChange();
+	};
 
-		View.renderAssignees = function(selected) {
-			this.$('#filter-assignee').html(template.render('ctrls/opts', {
-				placeholder: 'Any assignee',
-				opts: users.map(function(user) {
-					return user.get('username');
-				}),
-				selected: selected
-			}));
-		};
-
-		View.renderTableRows = function() {
-			this.$('#tasks-table-body').html(template.render('tasks/tableRows', {
-				tasks: this.collection.toJSON()
-			}));
-		};
-
-		View.render = function(filters) {
-			this.$el.html(template.render('tasks/index'));
-			this.renderProjects(filters.project);
-			this.renderVersions(filters.version);
-			this.renderAssignees(filters.assignee);
-			this.$('#filter-status').val(filters.status);
-			this.onFilterChange();
-		};
-
-		return backbone.View.extend(View);
-	}
+	return ParentView.extend(View);
 });

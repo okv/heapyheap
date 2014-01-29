@@ -1,36 +1,34 @@
 'use strict';
 
-define([
-	'backbone', 'app/template'
-], function(
-	backbone, template
-) {
-	return function(router) {
-		var View = {};
+define(['app/views/base'], function(ParentView) {
+	var View = {};
 
-		View.events = {
-			'click #login-button': 'login'
-		};
-
-		View.login = function() {
-			var self = this;
-			router.service.login(
-				this.$('#login').val(),
-				this.$('#password').val(),
-				function(user) {
-					if (user.login) router.navigate(router.returnUrl);
-				}
-			);
-		};
-
-		View.render = function() {
-			this.$el.html(template.render('login'));
-			// dev autologin
-			// this.$('#login').val('spike');
-			// this.$('#password').val('gkpod');
-			// this.$('#login-button').click();
-		};
-
-		return backbone.View.extend(View);
+	View.events = {
+		'click #login-button': 'login'
 	};
+
+	View.initialize = function() {
+		ParentView.prototype.initialize.apply(this, arguments);
+	};
+
+	View.login = function() {
+		var self = this;
+		self.router.service.login(
+			self.$('#login').val(),
+			self.$('#password').val(),
+			function(user) {
+				if (user.login) self.router.navigate(self.router.returnUrl);
+			}
+		);
+	};
+
+	View.render = function() {
+		this.$el.html(this._render('login'));
+		// dev autologin
+		// this.$('#login').val('spike');
+		// this.$('#password').val('gkpod');
+		// this.$('#login-button').click();
+	};
+
+	return ParentView.extend(View);
 });

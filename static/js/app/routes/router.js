@@ -3,7 +3,7 @@
 /**
  * Extends default backbone router
  */
-define(['backbone'], function(backbone, Task) {
+define(['backbone', 'underscore'], function(backbone, _) {
 	var Router = {};
 
 	Router.beforeRouteCallback = function(route, callback) {
@@ -30,6 +30,15 @@ define(['backbone'], function(backbone, Task) {
 		options = _(options || {}).defaults({
 			trigger: true
 		});
+		// add support of query string using `toFragment` from backbone.queryparams
+		if (options.qs) {
+			// reject falsy (except zero) qs parameters
+			_(options.qs).each(function(val, key, obj) {
+				if (!val && val !== 0) delete obj[key];
+			});
+			fragment = this.toFragment(fragment, options.qs);
+			delete options.qs;
+		}
 		superNavigate.call(this, fragment, options);
 	};
 

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['app/views/base', 'underscore'], function(ParentView, _) {
+define(['app/views/base'], function(ParentView) {
 	var View = {};
 
 	View.events = {
@@ -17,12 +17,8 @@ define(['app/views/base', 'underscore'], function(ParentView, _) {
 			status: this.$('#filter-status').val()
 		};
 		var self = this;
-		// TODO: move filter of falsy value to `navigate`
-		_(filters).each(function(val, key, obj) {
-			if (val === '') delete obj[key];
-		});
 		// TODO: move `toFragment` call to `navigate`
-		this.router.navigate(this.router.toFragment('tasks', filters), {trigger: false});
+		this.router.navigate('tasks', {trigger: false, qs: filters});
 		this.collection.fetch({data: filters, success: function() {
 			self.renderTableRows();
 		}});

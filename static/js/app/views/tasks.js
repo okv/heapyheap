@@ -39,7 +39,8 @@ define(['app/views/base'], function(ParentView) {
 		});
 		// sync tasks which changed remotely
 		this.listenTo(this.collection, 'backend:update', function(model) {
-			this.collection.get(model.id).set(model);
+			var localModel = this.collection.get(model.id);
+			if (localModel) localModel.set(model);
 		});
 	};
 

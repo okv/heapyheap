@@ -17,7 +17,13 @@ define(['app/views/base'], function(ParentView) {
 			self.$('#login').val(),
 			self.$('#password').val(),
 			function(user) {
-				if (user.login) self.navigate(self.router.returnUrl);
+				if (user.login) {
+					console.log('retrived user: ', user)
+					self.router.user = user;
+					// navigate to `returnUrl` or default route
+					self.navigate(self.router.returnUrl || self.router.defaultRoute);
+					delete self.router.returnUrl;
+				}
 			}
 		);
 	};

@@ -9,13 +9,7 @@ define(['socketio'], function(socketio) {
 
 	Service.prototype.login = function(login, password, callback) {
 		var self = this;
-		this.socket.emit('login', login, password, function(user) {
-			console.log('>>> retrived user: ', user)
-			if (user.login) {
-				if (self.onLogin) self.onLogin(user);
-			}
-			callback(user);
-		});
+		this.socket.emit('login', login, password, callback);
 	};
 
 	return Service;

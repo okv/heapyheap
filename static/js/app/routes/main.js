@@ -5,11 +5,7 @@ define([], function() {
 	route.url = '';
 	route.name = 'main';
 	route.callback = function() {
-		if (!this.user) {
-			this.navigate('login');
-		} else {
-			this.navigate('tasks');
-		}
+		this.navigate(this.user ? this.defaultRoute : 'login');
 	};
 	return route;
 });

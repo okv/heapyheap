@@ -44,7 +44,7 @@ require([
 					func();
 				}
 			});
-			if (!this.user && route.name !== 'login') {
+			if (!this.user && !isPublic(route)) {
 				this.returnUrl = window.location.pathname + window.location.search;
 				this.navigate('login');
 			} else if (this.user && route.name !== 'login') {
@@ -53,6 +53,9 @@ require([
 				callback();
 			}
 		};
+		function isPublic(route) {
+			return _(['login', 'main']).contains(route.name);
+		}
 		function isRendered(route) {
 			console.log(
 				'%s is rendered %s ',
@@ -80,10 +83,8 @@ require([
 		};
 
 		router.user = null;
+		router.defaultRoute = 'tasks';
 		router.service = new Service({socket: socket});
-		router.service.onLogin = function(user) {
-			router.user = user;
-		};
 
 		router.collections = {};
 

@@ -1,13 +1,15 @@
 'use strict';
 
-define(['underscore'], function(_) {
+define(['app/views/tasks'], function(TasksView) {
 	var route = {};
 	route.url = 'tasks';
 	route.name = 'tasks';
 	route.callback = function(qs) {
 		var filters = qs || {};
-		var self = this;
-		self.views.tasks.render(filters);
+		this.collections.tasks.fetch({data: filters, success: function(collection) {
+			route.view = new TasksView({el: 'body', collection: collection}).render(filters);
+		}});
+
 	};
 	return route;
 });

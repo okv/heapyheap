@@ -9,18 +9,14 @@ define(['app/views/base'], function(ParentView) {
 		'click #tasks-table-body tr': 'onSelectTask'
 	};
 
-	View.onFilterChange = function() {
+	View.onFilterChange = function(event) {
 		var filters = {
 			project: this.$('#filter-project').val(),
 			version: this.$('#filter-version').val(),
 			assignee: this.$('#filter-assignee').val(),
 			status: this.$('#filter-status').val()
 		};
-		var self = this;
-		this.navigate('tasks', {trigger: false, qs: filters});
-		this.collection.fetch({data: filters, success: function() {
-			self.renderTableRows();
-		}});
+		this.navigate('tasks', {qs: filters});
 	};
 
 	View.onSelectTask = function(event) {
@@ -31,8 +27,9 @@ define(['app/views/base'], function(ParentView) {
 
 	View.initialize = function() {
 		ParentView.prototype.initialize.apply(this, arguments);
-		this.listenTo(this.collection, 'add', function(model) {
-			this.listenTo(model, 'change:title, change:status', function(model) {
+		var self = this;
+		this.collection.each(function(model) {
+			self.listenTo(model, 'change:title, change:status', function(model) {
 				this.$(
 					'#tasks-table-body tr[data-task-id=' + model.get('id') + ']'
 				).replaceWith(
@@ -95,7 +92,8 @@ define(['app/views/base'], function(ParentView) {
 		this.renderVersions(filters.version);
 		this.renderAssignees(filters.assignee);
 		this.$('#filter-status').val(filters.status);
-		this.onFilterChange();
+		this.renderTableRows();
+		return this;
 	};
 
 	return ParentView.extend(View);

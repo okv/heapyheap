@@ -1,11 +1,11 @@
 'use strict';
 
-define([], function() {
+define(['app/views/login'], function(LoginView) {
 	var route = {};
 	route.url = 'login';
 	route.name = 'login';
 	route.callback = function() {
-		this.views.login.render();
+		new LoginView({el: 'body'}).render();
 	};
 	return route;
 });

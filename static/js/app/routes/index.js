@@ -20,7 +20,30 @@ require([
 
 		var router = new Router();
 		router.beforeRouteCallback = function(route, callback) {
-			console.log('>>> before route = ', route.name)
+			console.log('before route %s', route.name);
+			callback = _(callback).wrap(function(func) {
+				console.log(
+					'going to %s (it has parent %s)',
+					route.name,
+					route.parent && route.parent.name
+				);
+				if (route.parent && !isRendered(route.parent)) {
+					route.parent.callback();
+					// wait until parent will be rendered
+					var waitParent = function() {
+						setTimeout(function() {
+							console.log(
+								'wait until %s will be rendered',
+								route.parent.name
+							);
+							isRendered(route.parent) ? func() : waitParent();
+						}, 100);
+					};
+					waitParent();
+				} else {
+					func();
+				}
+			});
 			if (!this.user && route.name !== 'login') {
 				this.returnUrl = window.location.pathname + window.location.search;
 				this.navigate('login');
@@ -30,6 +53,14 @@ require([
 				callback();
 			}
 		};
+		function isRendered(route) {
+			console.log(
+				'%s is rendered %s ',
+				route.name,
+				route.view && route.view.isRendered()
+			);
+			return route.view && route.view.isRendered();
+		}
 		// some global initialization after user logged in
 		var isAfterLoginCalled = false;
 		function afterLogin(callback) {
@@ -43,11 +74,6 @@ require([
 				// app life cycle
 				router.collections.projects.fetch({success: callback});
 				router.collections.users.fetch({success: callback});
-				// init some views
-				router.views.tasks = new TasksView({
-					el: 'body',
-					collection: router.collections.tasks
-				});
 			} else {
 				callback();
 			}
@@ -60,8 +86,6 @@ require([
 		};
 
 		router.collections = {};
-		router.views = {};
-		router.views.login = new LoginView({el: 'body'});
 
 		BaseView.prototype.router = router;
 		BaseView.prototype.collections = router.collections;
@@ -69,6 +93,8 @@ require([
 		router.route(main);
 		router.route(login);
 		router.route(tasks);
+		// TODO: determine parent automatically (using rote names)
+		task.parent = tasks;
 		router.route(task);
 		Backbone.history.start({pushState: true});
 	});

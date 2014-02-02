@@ -33,10 +33,10 @@ require([
 ], function(
 	backbone, _,
 	Service, Router,
-	main, login, tasks, task,
+	mainRoute, loginRoute, tasksRoute, taskRoute,
 	authMiddleware, routeRelationsMiddleware,
 	BaseView, LoginView, TasksView,
-	Tasks, Projects, Users,
+	TasksCollection, ProjectsCollection, UsersCollection,
 	$
 ) {
 	$(document).ready(function() {
@@ -47,9 +47,9 @@ require([
 
 		router.use(authMiddleware({afterLogin: function(user, next) {
 			// some global initialization after user logged in
-			router.collections.tasks = new Tasks();
-			router.collections.projects = new Projects();
-			router.collections.users = new Users();
+			router.collections.tasks = new TasksCollection();
+			router.collections.projects = new ProjectsCollection();
+			router.collections.users = new UsersCollection();
 			next = _.after(2, next);
 			// fetch all models which will be synced in backgroud during all
 			// app life cycle
@@ -66,12 +66,12 @@ require([
 		BaseView.prototype.router = router;
 		BaseView.prototype.collections = router.collections;
 
-		router.route(main);
-		router.route(login);
-		router.route(tasks);
+		router.route(mainRoute);
+		router.route(loginRoute);
+		router.route(tasksRoute);
 		// TODO: determine parents automatically (using rote names)
-		task.parent = tasks;
-		router.route(task);
+		taskRoute.parent = tasksRoute;
+		router.route(taskRoute);
 		Backbone.history.start({pushState: true});
 	});
 });

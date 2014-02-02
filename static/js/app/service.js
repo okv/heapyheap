@@ -8,7 +8,6 @@ define(['socketio'], function(socketio) {
 	}
 
 	Service.prototype.login = function(login, password, callback) {
-		var self = this;
 		this.socket.emit('login', login, password, callback);
 	};
 

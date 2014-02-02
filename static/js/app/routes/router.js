@@ -46,11 +46,16 @@ define(['backbone', 'underscore'], function(backbone, _) {
 		callback();
 	};
 
+	/**
+	 * Use selected `middleware`, `route` and `next` will be passed as
+	 * arguments. `middleware` context (`this`) is link to the current router.
+	 */
 	Router.use = function(middleware) {
-		var oldBeforeRouteCallback = this._beforeRouteCallback;
+		var self = this,
+			oldBeforeRouteCallback = this._beforeRouteCallback;
 		this._beforeRouteCallback = function(route, callback) {
-			oldBeforeRouteCallback(route, function() {
-				middleware(route, callback);
+			oldBeforeRouteCallback.call(self, route, function() {
+				middleware.call(self, route, callback);
 			});
 		};
 	};

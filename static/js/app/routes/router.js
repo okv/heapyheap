@@ -16,7 +16,7 @@ define(['backbone', 'underscore'], function(backbone, _) {
 			oldCallback = route.callback;
 		route.callback = function() {
 			var args = arguments;
-			self.beforeRouteCallback(route, function() {
+			self._beforeRouteCallback(route, function() {
 				oldCallback.apply(self, args);
 			});
 		}
@@ -40,6 +40,19 @@ define(['backbone', 'underscore'], function(backbone, _) {
 			delete options.qs;
 		}
 		superNavigate.call(this, fragment, options);
+	};
+
+	Router._beforeRouteCallback = function(route, callback) {
+		callback();
+	};
+
+	Router.use = function(middleware) {
+		var oldBeforeRouteCallback = this._beforeRouteCallback;
+		this._beforeRouteCallback = function(route, callback) {
+			oldBeforeRouteCallback(route, function() {
+				middleware(route, callback);
+			});
+		};
 	};
 
 	return backbone.Router.extend(Router);

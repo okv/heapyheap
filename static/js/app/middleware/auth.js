@@ -5,7 +5,7 @@
  */
 define(['underscore'], function(_) {
 	return function(params) {
-		var publicRouteNames = ['login', 'main'];
+		var publicRouteNames = ['login', 'index'];
 		params = params || {};
 		var isAfterLoginCalled = false;
 		return function(route, next) {

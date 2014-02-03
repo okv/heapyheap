@@ -25,7 +25,7 @@ requirejs.config({
 require([
 	'backbone', 'underscore',
 	'app/service', 'app/routes/router',
-	'app/routes/main', 'app/routes/login', 'app/routes/tasks', 'app/routes/task',
+	'app/routes/main', 'app/routes/tasks',
 	'app/middleware/auth', 'app/middleware/routeRelations',
 	'app/views/base', 'app/views/login', 'app/views/tasks',
 	'app/models/tasks', 'app/models/projects', 'app/models/users',
@@ -33,7 +33,7 @@ require([
 ], function(
 	backbone, _,
 	Service, Router,
-	mainRoute, loginRoute, tasksRoute, taskRoute,
+	mainRoute, tasksRoute,
 	authMiddleware, routeRelationsMiddleware,
 	BaseView, LoginView, TasksView,
 	TasksCollection, ProjectsCollection, UsersCollection,
@@ -66,12 +66,9 @@ require([
 		BaseView.prototype.router = router;
 		BaseView.prototype.collections = router.collections;
 
-		router.route(mainRoute);
-		router.route(loginRoute);
-		router.route(tasksRoute);
-		// TODO: determine parents automatically (using rote names)
-		taskRoute.parent = tasksRoute;
-		router.route(taskRoute);
+		mainRoute(router);
+		tasksRoute(router);
+
 		Backbone.history.start({pushState: true});
 	});
 });

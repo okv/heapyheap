@@ -1,11 +1,17 @@
 'use strict';
 
-define([], function() {
-	var route = {};
-	route.url = '';
-	route.name = 'main';
-	route.callback = function() {
-		this.navigate(this.user ? this.defaultRoute : 'login');
+define(['app/views/login'], function(LoginView) {
+
+	return function(router) {
+
+		router.route('', 'main', function() {
+			router.navigate(router.user ? router.defaultRoute : 'login');
+		});
+
+		router.route('login', 'login', function() {
+			new LoginView({el: 'body'}).render();
+		});
+
 	};
-	return route;
+
 });

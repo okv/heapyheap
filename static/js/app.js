@@ -40,34 +40,36 @@ require([
 	$
 ) {
 	$(document).ready(function() {
-		var socket = backbone.io.connect();
+		var app = {
+			router: new Router(),
+			service: new Service({socket: backbone.io.connect()}),
+			collections: {},
+			user: null,
+			defaultRoute: 'tasks',
+			returnUrl: null
+		};
 
-		var router = new Router();
-		router.collections = {};
+		// share app with router and views
+		app.router.app = app;
+		BaseView.prototype.app = app;
 
-		router.use(authMiddleware({afterLogin: function(user, next) {
+		// middleware
+		app.router.use(authMiddleware({afterLogin: function(user, next) {
 			// some global initialization after user logged in
-			router.collections.tasks = new TasksCollection();
-			router.collections.projects = new ProjectsCollection();
-			router.collections.users = new UsersCollection();
+			app.collections.tasks = new TasksCollection();
+			app.collections.projects = new ProjectsCollection();
+			app.collections.users = new UsersCollection();
 			next = _.after(2, next);
 			// fetch all models which will be synced in backgroud during all
 			// app life cycle
-			router.collections.projects.fetch({success: next});
-			router.collections.users.fetch({success: next});
+			app.collections.projects.fetch({success: next});
+			app.collections.users.fetch({success: next});
 		}}));
+		app.router.use(routeRelationsMiddleware());
 
-		router.use(routeRelationsMiddleware());
-
-		router.user = null;
-		router.defaultRoute = 'tasks';
-		router.service = new Service({socket: socket});
-
-		BaseView.prototype.router = router;
-		BaseView.prototype.collections = router.collections;
-
-		mainRoute(router);
-		tasksRoute(router);
+		// routes
+		mainRoute(app.router);
+		tasksRoute(app.router);
 
 		Backbone.history.start({pushState: true});
 	});

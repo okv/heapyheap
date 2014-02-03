@@ -13,16 +13,16 @@ define(['app/views/base'], function(ParentView) {
 
 	View.login = function() {
 		var self = this;
-		self.router.service.login(
+		self.app.service.login(
 			self.$('#login').val(),
 			self.$('#password').val(),
 			function(user) {
 				if (user.login) {
 					console.log('retrived user: ', user)
-					self.router.user = user;
+					self.app.user = user;
 					// navigate to `returnUrl` or default route
-					self.navigate(self.router.returnUrl || self.router.defaultRoute);
-					delete self.router.returnUrl;
+					self.navigate(self.app.returnUrl || self.app.defaultRoute);
+					delete self.app.returnUrl;
 				}
 			}
 		);

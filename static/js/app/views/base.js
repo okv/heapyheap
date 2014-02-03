@@ -18,7 +18,7 @@ define(['backbone', 'app/template'], function(backbone, template) {
 	};
 
 	View.navigate = function(fragment, options) {
-		return this.router.navigate(fragment, options);
+		return this.app.router.navigate(fragment, options);
 	};
 
 	View.attach = function() {

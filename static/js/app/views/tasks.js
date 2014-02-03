@@ -52,7 +52,7 @@ define(['app/views/base'], function(ParentView) {
 	View.renderProjects = function(selected) {
 		this.$('#filter-project').html(this._render('ctrls/opts', {
 			placeholder: 'Any project',
-			opts: this.collections.projects.map(function(project) {
+			opts: this.app.collections.projects.map(function(project) {
 				return project.get('name');
 			}),
 			selected: selected
@@ -61,7 +61,7 @@ define(['app/views/base'], function(ParentView) {
 
 	View.renderVersions = function(selected) {
 		var selProjectName = this.$('#filter-project').val(),
-			selProject = this.collections.projects.find(function(project) {
+			selProject = this.app.collections.projects.find(function(project) {
 				return project.get('name') === selProjectName;
 			});
 		this.$('#filter-version').html(this._render('ctrls/opts', {
@@ -74,7 +74,7 @@ define(['app/views/base'], function(ParentView) {
 	View.renderAssignees = function(selected) {
 		this.$('#filter-assignee').html(this._render('ctrls/opts', {
 			placeholder: 'Any assignee',
-			opts: this.collections.users.map(function(user) {
+			opts: this.app.collections.users.map(function(user) {
 				return user.get('username');
 			}),
 			selected: selected

@@ -43,7 +43,7 @@ require([
 		var app = {
 			router: new Router(),
 			service: new Service({socket: backbone.io.connect()}),
-			collections: {},
+			models: {},
 			user: null,
 			defaultRoute: 'tasks',
 			returnUrl: null
@@ -56,14 +56,14 @@ require([
 		// middleware
 		app.router.use(authMiddleware({afterLogin: function(user, next) {
 			// some global initialization after user logged in
-			app.collections.tasks = new TasksCollection();
-			app.collections.projects = new ProjectsCollection();
-			app.collections.users = new UsersCollection();
+			app.models.tasks = new TasksCollection();
+			app.models.projects = new ProjectsCollection();
+			app.models.users = new UsersCollection();
 			next = _.after(2, next);
 			// fetch all models which will be synced in backgroud during all
 			// app life cycle
-			app.collections.projects.fetch({success: next});
-			app.collections.users.fetch({success: next});
+			app.models.projects.fetch({success: next});
+			app.models.users.fetch({success: next});
 		}}));
 		app.router.use(routeRelationsMiddleware());
 

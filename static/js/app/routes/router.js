@@ -11,7 +11,7 @@ define(['backbone', 'underscore'], function(backbone, _) {
 	};
 
 	var superRoute = backbone.Router.prototype.route;
-	Router.route = function(url, name, parent, callback) {
+	Router.route = function(name, url, parent, callback) {
 		if (_(parent).isFunction()) {
 			callback = parent;
 			parent = null;

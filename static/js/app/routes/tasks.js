@@ -13,7 +13,7 @@ define(['app/views/tasks', 'app/views/task'], function(TasksView, TaskView) {
 			}});
 		});
 
-		router.route('tasks/:id', 'task', 'tasks', function(id) {
+		router.route('task', 'tasks/:id', 'tasks', function(id) {
 			var tasks = router.collections.tasks;
 			var model = tasks.get(id);
 			if (!model) {

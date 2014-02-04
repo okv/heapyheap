@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+var http = require('http'),
+	fs = require('fs'),
+	path = require('path');
+
+var issues = [];
+function getIssues(offset, outFile) {
+	var url = 'http://www.redmine.org/projects/redmine/issues.json?' +
+		'offset=' + offset + '&limit=100&sort=created_on&status_id=*&' +
+		// create after 01.01.2012
+		'created_on=%3E%3D2012-01-01';
+	http.get(url, function(res) {
+		var data = '';
+		res.on('data', function(chunk) {
+			data += chunk;
+		}).on('end', function() {
+			data = JSON.parse(data);
+			if (data.issues.length) {
+				issues = issues.concat(data.issues);
+				console.log(issues.length + ' issues downloaded, continue');
+				getIssues(offset + 100, outFile);
+			} else {
+				console.log('done downloading issues, writing it to ' + outFile);
+				fs.writeFileSync(outFile, JSON.stringify(issues, null, 4));
+				console.log('done');
+			}
+		});
+	});
+}
+
+getIssues(0, path.join(__dirname, 'issues.json'));

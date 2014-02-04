@@ -1,53 +1,65 @@
 'use strict';
 
 var Steppy = require('twostep'),
-	db = require('../db');
+	db = require('../db'),
+	issues = require('../dev/issues.json');
 
 
 exports.migrate = function(client, done) {
-	var assignees = [
-		'spike', 'cyrus', 'delena', 'shenita', 'aisha', 'nikita',
-		'lavette', 'alisia', 'tanisha', 'margorie'
-	];
-	var statuses = ['waiting', 'in progress', 'done'];
+	var statusesHash = {New: 'waiting', Resolved: 'done'};
+
+	var usersHash = {},
+		projectsHash = {};
+
 	Steppy(
 		function() {
-			var tasks = [],
-				projects = [];
-			for (var i = 0; i < 10; i++) {
-				var project = {name: 'project ' + i, versions: []};
-				for (var j = 0; j < 5; j++) {
-					var version = '0.' + j + '.0';
-					project.versions.push(version);
-					for (var k = 0; k < 200; k++) {
-						var task = {
-							id: tasks.length + 1,
-							project: project.name,
-							version: version,
-							assignee: getRandomItem(assignees),
-							status: getRandomItem(statuses)
-						};
-						task.title = 'task #' + task.id;
-						tasks.push(task);
-					}
+			var tasks = issues.map(function(issue) {
+				var task = {
+					id: issue.id,
+					title: issue.subject,
+					description: issue.description,
+					version: issue.fixed_version && issue.fixed_version.name,
+					assignee: issue.assigned_to && issue.assigned_to.name,
+					status: statusesHash[issue.status.name] || 'in progress'
+				};
+				if (task.assignee && !usersHash[task.assignee]) usersHash[task.assignee] = 1;
+
+				var project = 'redmine';
+				if (task.version) {
+					var majorVersion = parseMajorVersion(task.version);
+					if (majorVersion) project += ' ' + majorVersion + '.x';
 				}
-				projects.push(project);
-			}
+				task.project = project;
+				if (!projectsHash[task.project]) projectsHash[task.project] = {};
+				if (task.version && !projectsHash[task.project][task.version]) {
+					projectsHash[task.project][task.version] = 1;
+				}
+				return task;
+			});
+
+			var users = Object.keys(usersHash).map(function(username) {
+				return {username: username};
+			});
+
+			var projects = Object.keys(projectsHash).map(function(name) {
+				return {
+					name: name,
+					versions: Object.keys(projectsHash[name]).map(function(version) {
+						return version;
+					})
+				};
+			});
+
 			db.tasks.put(tasks, this.slot());
 			db.projects.put(projects, this.slot());
-			db.users.put(assignees.map(function(assignee) {
-				return {username: assignee};
-			}), this.slot());
+			db.users.put(users, this.slot());
 		},
 		done
 	);
 };
 
 
-function getRandomInt(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomItem(array) {
-	return array[getRandomInt(0, array.length - 1)];
+function parseMajorVersion(version) {
+	var parts = /(\d+\.\d+)/.exec(version);
+	return parts && parts[1];
 }

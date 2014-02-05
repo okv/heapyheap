@@ -1,7 +1,8 @@
 'use strict';
 
 var Steppy = require('twostep').Steppy,
-	db = require('../db');
+	db = require('../db'),
+	utils = require('../utils');
 
 exports.bind = function(backend) {
 	backend.use('read', function(req, res, next) {
@@ -16,13 +17,13 @@ exports.bind = function(backend) {
 			});
 		} else {
 			var filters = data,
-				start = {},
-				end = {};
+				start = {};
 			console.log('>>> getting list: ', filters);
 			if (!filters.limit) filters.limit = 10;
 			if (filters.project) start.project = filters.project;
 			if (filters.version) start.version = filters.version;
 			if (filters.assignee) start.assignee = filters.assignee;
+			var end = utils.extend({}, start);
 			if (filters.status) {
 				if (filters.status === 'undone') {
 					start.status = 'in progress';
@@ -31,7 +32,7 @@ exports.bind = function(backend) {
 					start.status = filters.status;
 				}
 			}
-			console.log('>>> start = ', start, end)
+			console.log('>>> start = ', start, end);
 			Steppy(
 				function() {
 					db.tasks.find({
@@ -41,11 +42,15 @@ exports.bind = function(backend) {
 					}, this.slot());
 				},
 				function(err, objs) {
-					var group = this.makeGroup();
-					objs.forEach(function(obj) {
-						// should find by `listInfo` (when get will supports `by`)
-						db.tasks.get({id: obj.id}, group.slot());
-					});
+					if (objs.length) {
+						var group = this.makeGroup();
+						objs.forEach(function(obj) {
+							// should find by `listInfo` (when get will supports `by`)
+							db.tasks.get({id: obj.id}, group.slot());
+						});
+					} else {
+						this.pass(objs);
+					}
 				},
 				function(err, objs) {
 					console.log('>>> obj = ', objs[0])

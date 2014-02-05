@@ -4,6 +4,8 @@ div project: #{task.project}
 div version: #{task.version}
 div assignee: #{task.assignee}
 div status: #{task.status}
+div created at: #{new Date(task.createDate)}
+div updated at: #{new Date(task.updateDate)}
 p !{task.description}
 
 button(style="margin-top: 30px;")#task-change-status.pure-button.pure-button-primary Change status

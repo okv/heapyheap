@@ -25,6 +25,8 @@ exports.migrate = function(client, done) {
 			var tasks = issues.map(function(issue) {
 				var task = {
 					id: issue.id,
+					createDate: new Date(issue.created_on).getTime(),
+					updateDate: new Date(issue.updated_on).getTime(),
 					title: issue.subject,
 					description: issue.description,
 					version: issue.fixed_version && issue.fixed_version.name,

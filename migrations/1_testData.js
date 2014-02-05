@@ -1,8 +1,10 @@
 'use strict';
 
-var Steppy = require('twostep'),
+var Steppy = require('twostep').Steppy,
 	db = require('../db'),
-	issues = require('../dev/issues.json');
+	zlib = require('zlib'),
+	fs = require('fs'),
+	path = require('path');
 
 
 exports.migrate = function(client, done) {
@@ -13,6 +15,13 @@ exports.migrate = function(client, done) {
 
 	Steppy(
 		function() {
+			fs.readFile(path.resolve('.', 'dev', 'issues.json.gz'), this.slot());
+		},
+		function(err, data) {
+			zlib.gunzip(data, this.slot());
+		},
+		function(err, buffer) {
+			var issues = JSON.parse(buffer.toString());
 			var tasks = issues.map(function(issue) {
 				var task = {
 					id: issue.id,

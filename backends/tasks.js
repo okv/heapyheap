@@ -30,6 +30,7 @@ exports.bind = function(backend) {
 					end.status = 'waiting';
 				} else {
 					start.status = filters.status;
+					end.status = filters.status;
 				}
 			}
 			console.log('>>> start = ', start, end);

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['app/views/tasks', 'app/views/task'], function(TasksView, TaskView) {
+define(['app/views/tasks/list', 'app/views/tasks/view'], function(TasksView, TaskView) {
 
 	return function(router) {
 

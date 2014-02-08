@@ -26,7 +26,7 @@ define(['app/views/base'], function(ParentView) {
 	};
 
 	View.render = function() {
-		this.$el.html(this._render('tasks/full', {
+		this.$el.html(this._render('tasks/view', {
 			task: this.model.toJSON()
 		}));
 		return this;

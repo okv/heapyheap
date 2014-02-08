@@ -27,7 +27,7 @@ require([
 	'app/service', 'app/routes/router',
 	'app/routes/main', 'app/routes/tasks',
 	'app/middleware/auth', 'app/middleware/routeRelations',
-	'app/views/base', 'app/views/login', 'app/views/tasks',
+	'app/views/base',
 	'app/models/tasks', 'app/models/projects', 'app/models/users',
 	'jquery'
 ], function(
@@ -35,7 +35,7 @@ require([
 	Service, Router,
 	mainRoute, tasksRoute,
 	authMiddleware, routeRelationsMiddleware,
-	BaseView, LoginView, TasksView,
+	BaseView,
 	TasksCollection, ProjectsCollection, UsersCollection,
 	$
 ) {

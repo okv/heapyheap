@@ -8,25 +8,25 @@
 define([
 	'underscore',
 	//preload all templates
-	'app/templates/login', 'app/templates/tasks/index',
+	'app/templates/login', 'app/templates/tasks/list',
 	'app/templates/tasks/table', 'app/templates/tasks/tableRow',
 	'app/templates/tasks/tableRows',
-	'app/templates/tasks/full', 'app/templates/ctrls/opts'
+	'app/templates/tasks/view', 'app/templates/ctrls/opts'
 ], function(
 	_,
-	login, tasksIndex, tasksTable, tasksTableRow, tasksTableRows,
-	tasksFull, ctrlsOpts
+	login, tasksList, tasksTable, tasksTableRow, tasksTableRows,
+	tasksView, ctrlsOpts
 ) {
 
 	var template = {};
 
 	template._hash = {
 		login: login,
-		'tasks/index': tasksIndex,
+		'tasks/list': tasksList,
 		'tasks/table': tasksTable,
 		'tasks/tableRow': tasksTableRow,
 		'tasks/tableRows': tasksTableRows,
-		'tasks/full': tasksFull,
+		'tasks/view': tasksView,
 		'ctrls/opts': ctrlsOpts
 	};
 

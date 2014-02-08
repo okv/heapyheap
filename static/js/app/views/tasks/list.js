@@ -88,7 +88,7 @@ define(['app/views/base'], function(ParentView) {
 	};
 
 	View.render = function(filters) {
-		this.$el.html(this._render('tasks/index'));
+		this.$el.html(this._render('tasks/list'));
 		this.renderProjects(filters.project);
 		this.renderVersions(filters.version);
 		this.renderAssignees(filters.assignee);

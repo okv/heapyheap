@@ -20,9 +20,7 @@ define(['app/views/base'], function(ParentView) {
 	};
 
 	View.onSelectTask = function(event) {
-		this.navigate(
-			'tasks/' + this.$(event.target).data('task-id')
-		);
+		this.navigate('tasks/' + this.$(event.currentTarget).data('task-id'));
 	};
 
 	View.initialize = function() {

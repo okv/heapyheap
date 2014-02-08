@@ -1,5 +1,3 @@
-
-tr(data-task-id=task.id)
-	td
-		| #{task.title}
-	td #{task.status}
+.tasks__item(data-task-id=task.id)
+	.tasks__item__title ##{task.id} #{task.title}
+	.tasks__item__status #{task.status}

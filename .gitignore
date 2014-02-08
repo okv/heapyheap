@@ -3,3 +3,4 @@ db/
 migrations/.migrations
 static/js/app/templates/
 static/css/**/*.css
+.DS_Store

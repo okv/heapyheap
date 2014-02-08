@@ -1,11 +1,39 @@
+.task
+	h2.tasks__header ##{task.id} #{task.title}
+	.task__card
+		.task__card__info
+			.task__card__info__tags-l
+				ul.tags
+					li.tags__item #{task.project}
+					li.tags__item #{task.version}
+			.summary
+				.summary__item
+					.summary__item__title assignee
+					.summary__item__value
+						a.link #{task.assignee}
+				.summary__item
+					.summary__item__title created at
+					.summary__item__value #{new Date(task.createDate)}
+				.summary__item
+					.summary__item__title updated at
+					.summary__item__value #{new Date(task.createDate)}
+		.task__card__controls
+			.task__card__controls__status-l
+				.status-control
+					.status-control__text #{task.status}
+					.status-control__buttons
+						.status-control__buttons__item
+							button#task-change-status.button change status
+			.task__card__controls__timer-l
+				.timers
+					h4.timers__header timers
+					.timers__item
+						include ../ctrls/timer
+					.timers__item
+						.timer
+							.timer__time 00:15
+							.timer__content
+								a.link Иван Иванов
 
-div ##{task.id} #{task.title}
-div project: #{task.project}
-div version: #{task.version}
-div assignee: #{task.assignee}
-div status: #{task.status}
-div created at: #{new Date(task.createDate)}
-div updated at: #{new Date(task.updateDate)}
-p !{task.description}
-
-button(style="margin-top: 30px;")#task-change-status.pure-button.pure-button-primary Change status
+	.task__description
+		p !{task.description}

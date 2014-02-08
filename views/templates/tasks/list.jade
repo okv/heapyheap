@@ -1,8 +1,17 @@
+.header
+	.header__left
+		.current-timer-info
+			.current-timer-info__part
+				.link(href="javascript:void(0)") #123
+			.current-timer-info__part
+				include ../ctrls/timer
+	.header__right
+		.link(href="javascript:void(0)") Иван Иванов
+.main-layout
+	.main-layout__sidebar
+		.main-layout__sidebar__filters-l
+			include filters
 
-div(style="padding: 200px 200px 0px 50px;")
-	include filters
-	.pure-g
-		.pure-u-1-3
-			include table
-		.pure-u-2-3
-			#task-full
+		include table
+	.main-layout__content
+		#task-full

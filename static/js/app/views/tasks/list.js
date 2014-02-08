@@ -6,7 +6,7 @@ define(['app/views/base'], function(ParentView) {
 	View.events = {
 		'change #filter-project': 'onProjectChange',
 		'change #filter-version,#filter-assignee,#filter-status': 'onFilterChange',
-		'click #tasks-table-body tr': 'onSelectTask'
+		'click #tasks-table-body .tasks__item': 'onSelectTask'
 	};
 
 	View.onFilterChange = function(event) {
@@ -21,7 +21,7 @@ define(['app/views/base'], function(ParentView) {
 
 	View.onSelectTask = function(event) {
 		this.navigate(
-			'tasks/' + this.$(event.target).parent().data('task-id')
+			'tasks/' + this.$(event.target).data('task-id')
 		);
 	};
 

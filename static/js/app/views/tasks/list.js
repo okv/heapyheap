@@ -29,9 +29,9 @@ define(['app/views/base'], function(ParentView) {
 		this.collection.each(function(model) {
 			self.listenTo(model, 'change:title, change:status', function(model) {
 				this.$(
-					'#tasks-table-body tr[data-task-id=' + model.get('id') + ']'
+					'#tasks-table-body [data-task-id=' + model.get('id') + ']'
 				).replaceWith(
-					this._render('tasks/tableRow', {task: model.toJSON()})
+					this._render('tasks/item', {task: model.toJSON()})
 				);
 			});
 		});
@@ -80,7 +80,7 @@ define(['app/views/base'], function(ParentView) {
 	};
 
 	View.renderTableRows = function() {
-		this.$('#tasks-table-body').html(this._render('tasks/tableRows', {
+		this.$('#tasks-table-body').html(this._render('tasks/items', {
 			tasks: this.collection.toJSON()
 		}));
 	};

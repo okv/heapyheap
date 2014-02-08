@@ -9,12 +9,12 @@ define([
 	'underscore',
 	//preload all templates
 	'app/templates/login', 'app/templates/tasks/list',
-	'app/templates/tasks/table', 'app/templates/tasks/tableRow',
-	'app/templates/tasks/tableRows',
+	'app/templates/tasks/itemsList', 'app/templates/tasks/item',
+	'app/templates/tasks/items',
 	'app/templates/tasks/view', 'app/templates/ctrls/opts'
 ], function(
 	_,
-	login, tasksList, tasksTable, tasksTableRow, tasksTableRows,
+	login, tasksList, tasksItemsList, tasksItem, tasksItems,
 	tasksView, ctrlsOpts
 ) {
 
@@ -23,9 +23,9 @@ define([
 	template._hash = {
 		login: login,
 		'tasks/list': tasksList,
-		'tasks/table': tasksTable,
-		'tasks/tableRow': tasksTableRow,
-		'tasks/tableRows': tasksTableRows,
+		'tasks/itemsList': tasksItemsList,
+		'tasks/item': tasksItem,
+		'tasks/items': tasksItems,
 		'tasks/view': tasksView,
 		'ctrls/opts': ctrlsOpts
 	};

@@ -74,6 +74,7 @@ exports.bind = function(backend) {
 					this.pass(model.id);
 				} else {
 					model.createDate = model.updateDate;
+					model.status = 'waiting';
 					db.tasks.getNextId(this.slot());
 				}
 			},

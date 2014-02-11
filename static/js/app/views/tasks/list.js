@@ -27,7 +27,7 @@ define(['app/views/base'], function(ParentView) {
 		ParentView.prototype.initialize.apply(this, arguments);
 		var self = this;
 		this.collection.each(function(model) {
-			self.listenTo(model, 'change:title, change:status', function(model) {
+			self.listenTo(model, 'change:title change:status', function(model) {
 				this.$(
 					'#tasks-table-body [data-task-id=' + model.get('id') + ']'
 				).replaceWith(
@@ -53,7 +53,8 @@ define(['app/views/base'], function(ParentView) {
 			opts: this.app.models.projects.map(function(project) {
 				return project.get('name');
 			}),
-			selected: selected
+			selected: selected,
+			callAtOnce: true
 		}));
 	};
 
@@ -65,7 +66,8 @@ define(['app/views/base'], function(ParentView) {
 		this.$('#filter-version').html(this._render('ctrls/opts', {
 			placeholder: 'Any version',
 			opts: selProject ? selProject.get('versions') : [],
-			selected: selected
+			selected: selected,
+			callAtOnce: true
 		}));
 	};
 
@@ -75,7 +77,8 @@ define(['app/views/base'], function(ParentView) {
 			opts: this.app.models.users.map(function(user) {
 				return user.get('username');
 			}),
-			selected: selected
+			selected: selected,
+			callAtOnce: true
 		}));
 	};
 

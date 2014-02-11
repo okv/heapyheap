@@ -63,6 +63,7 @@ exports.bind = function(backend) {
 	});
 
 	backend.use('update', function(req, res, next) {
+		req.model.updateDate = Date.now();
 		db.tasks.put(req.model, function(err) {
 			if (err) return next(err);
 			res.end(req.model);

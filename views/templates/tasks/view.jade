@@ -16,7 +16,7 @@
 					.summary__item__value #{new Date(task.createDate)}
 				.summary__item
 					.summary__item__title updated at
-					.summary__item__value #{new Date(task.createDate)}
+					.summary__item__value #{new Date(task.updateDate)}
 		.task__card__controls
 			.task__card__controls__status-l
 				.status-control
@@ -37,3 +37,5 @@
 
 	.task__description
 		p !{task.description}
+
+	button#task-edit.button edit

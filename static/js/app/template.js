@@ -11,11 +11,13 @@ define([
 	'app/templates/login', 'app/templates/tasks/list',
 	'app/templates/tasks/itemsList', 'app/templates/tasks/item',
 	'app/templates/tasks/items',
-	'app/templates/tasks/view', 'app/templates/ctrls/opts'
+	'app/templates/tasks/view', 'app/templates/tasks/form',
+	'app/templates/ctrls/opts'
 ], function(
 	_,
 	login, tasksList, tasksItemsList, tasksItem, tasksItems,
-	tasksView, ctrlsOpts
+	tasksView, tasksFormView,
+	ctrlsOpts
 ) {
 
 	var template = {};
@@ -27,6 +29,7 @@ define([
 		'tasks/item': tasksItem,
 		'tasks/items': tasksItems,
 		'tasks/view': tasksView,
+		'tasks/form': tasksFormView,
 		'ctrls/opts': ctrlsOpts
 	};
 

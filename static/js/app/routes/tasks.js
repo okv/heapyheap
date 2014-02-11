@@ -1,21 +1,25 @@
 'use strict';
 
-define(['app/views/tasks/list', 'app/views/tasks/view'], function(TasksView, TaskView) {
+define([
+	'app/views/tasks/list', 'app/views/tasks/view', 'app/views/tasks/form'
+], function(
+	TasksListView, TasksView, TasksForm
+) {
 
 	return function(router) {
 
 		var app = router.app,
 			models = app.models;
 
-		router.route('tasks', 'tasks', function(qs) {
+		router.route('tasksList', 'tasks', function(qs) {
 			var self = this,
 				filters = qs || {};
 			models.tasks.fetch({data: filters, success: function(collection) {
-				self.view = new TasksView({el: 'body', collection: collection}).render(filters);
+				self.view = new TasksListView({el: 'body', collection: collection}).render(filters);
 			}});
 		});
 
-		router.route('task', 'tasks/:id', 'tasks', function(id) {
+		router.route('tasksView', 'tasks/:id', 'tasksList', function(id) {
 			var model = models.tasks.get(id);
 			if (!model) {
 				// TODO: add method for instaces creation
@@ -25,7 +29,19 @@ define(['app/views/tasks/list', 'app/views/tasks/view'], function(TasksView, Tas
 			// always fetch latest model from server before viewing it
 			model.fetch({success: function(model) {
 				console.log('>>> fetched model = ', model.toJSON())
-				new TaskView({el: '#task-full', model: model}).render();
+				new TasksView({el: '#task-full', model: model}).render();
+			}});
+		});
+
+		router.route('tasksEdit', 'tasks/:id/edit', 'tasksList', function(id) {
+			var model = models.tasks.get(id);
+			if (!model) {
+				// TODO: add method for instaces creation
+				model = new models.tasks.model({id: id});
+				models.tasks._prepareModel(model);
+			}
+			model.fetch({success: function(model) {
+				new TasksForm({el: '#task-full', model: model}).render();
 			}});
 		});
 

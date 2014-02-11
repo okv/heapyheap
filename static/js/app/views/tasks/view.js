@@ -4,7 +4,8 @@ define(['app/views/base'], function(ParentView) {
 	var View = {};
 
 	View.events = {
-		'click #task-change-status': 'onTaskChangeStatusButtonClick'
+		'click #task-change-status': 'onTaskChangeStatusButtonClick',
+		'click #task-edit': 'onTaskEditButtonClick'
 	};
 
 	View.initialize = function() {
@@ -18,6 +19,10 @@ define(['app/views/base'], function(ParentView) {
 			this.model.get('status') === 'waiting' ? 'in porgress' : 'waiting'
 		);
 		this.model.save();
+	};
+
+	View.onTaskEditButtonClick = function() {
+		this.navigate('tasks/' + this.model.get('id') + '/edit');
 	};
 
 	View.onModelChange = function(model) {

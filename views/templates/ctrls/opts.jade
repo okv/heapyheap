@@ -1,6 +1,10 @@
 
-if placeholder
-	option(value="") #{placeholder}
+mixin opts(opts, placeholder, selected)
+	if placeholder
+		option(value="") #{placeholder}
 
-each opt in opts
-	option(value="#{opt}", selected=(opt === selected)) #{opt}
+	each opt in opts
+		option(value="#{opt}", selected=(opt === selected)) #{opt}
+
+if typeof callAtOnce !== 'undefined' && callAtOnce
+	mixin opts(opts, placeholder, selected)

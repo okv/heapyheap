@@ -16,7 +16,8 @@ define([
 				filters = qs || {};
 			models.tasks.fetch({data: filters, success: function(collection) {
 				self.view = new TasksListView({el: 'body', collection: collection}).render(filters);
-			}});
+			// reset collection coz client merge breaks server sorting
+			}, reset: true});
 		});
 
 		router.route('tasksView', 'tasks/:id', 'tasksList', function(id) {

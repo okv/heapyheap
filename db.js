@@ -4,21 +4,24 @@ var nlevel = require('nlevel'),
 	config = require('./config')(),
 	ldb = nlevel.db(config.db.path, {valueEncoding: 'json'});
 
+
 exports.tasks = new nlevel.DocsSection(ldb, 'tasks', {
 	projections: [
-		// some combinations with `id` goes first for sort by id when some
-		// parameterss are not set
-		{key: {project: 1, id: 1}, value: pickId},
-		{key: {project: 1, version: 1, id: 1}, value: pickId},
-		{key: {project: 1, version: 1, assignee: 1, id: 1}, value: pickId},
-		{key: {project: 1, assignee: 1, id: 1}, value: pickId},
-
-		{key: {project: 1, version: 1, assignee: 1, status: 1, id: 1}, value: pickId},
-		{key: {project: 1, assignee: 1, status: 1, id: 1}, value: pickId},
-		{key: {project: 1, status: 1, id: 1}, value: pickId},
-		{key: {project: 1, version: 1, status: 1, id: 1}, value: pickId},
-		{key: {assignee: 1, status: 1, id: 1}, value: pickId},
-		{key: {status: 1, id: 1}, value: pickId},
+		// some combinations with `rud` goes first for sort by
+		// reversed update date when some parameters are not set
+		{key: {project: 1, rud: rud, id: 1}, value: pickId},
+		{key: {project: 1, version: 1, rud: rud, id: 1}, value: pickId},
+		{key: {project: 1, version: 1, assignee: 1, rud: rud, id: 1}, value: pickId},
+		{key: {project: 1, assignee: 1, rud: rud, id: 1}, value: pickId},
+		{key: {assignee: 1, rud: rud, id: 1}, value: pickId},
+		{key: {rud: rud, id: 1}, value: pickId},
+		// always have `rud` before `id` to sort by reversed update date
+		{key: {project: 1, version: 1, assignee: 1, status: 1, rud: rud, id: 1}, value: pickId},
+		{key: {project: 1, assignee: 1, status: 1, rud: rud, id: 1}, value: pickId},
+		{key: {project: 1, status: 1, rud: rud, id: 1}, value: pickId},
+		{key: {project: 1, version: 1, status: 1, rud: rud, id: 1}, value: pickId},
+		{key: {assignee: 1, status: 1, rud: rud, id: 1}, value: pickId},
+		{key: {status: 1, rud: rud, id: 1}, value: pickId},
 		{id: 'listInfo', key: {id: 1}, value: function(task) {
 			return {id: task.id, title: task.title, status: task.status};
 		}}
@@ -35,6 +38,15 @@ function getNextId(callback) {
 
 function pickId(doc) {
 	return {id: doc.id};
+}
+
+var maxTime = new Date('03:14:07 UTC 2138-01-19').getTime();
+// reversed update date - for sorting forward (it's fatster for leveldb then
+// reverse: true, see levelup reverse notes for details) but have documents
+// sorted by update date in descending order
+// TODO: maybe use reverse: true coz too many projections needed for current hack
+function rud(doc) {
+	return maxTime - doc.updateDate;
 }
 
 exports.projects = new nlevel.ValSection(ldb, 'projects');

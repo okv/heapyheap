@@ -16,7 +16,7 @@
 		"remigrate": "rm -Rf db/ && echo '[]' > migrations/.migrations && npm run migrate"
 	},
 	"dependencies": {
-		"nlevel": "0.1.0",
+		"nlevel": "0.1.2",
 		"twostep": "0.3.3",
 		"node-static": "0.7.1",
 		"socket.io": "0.9.16",

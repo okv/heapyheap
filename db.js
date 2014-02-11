@@ -25,6 +25,14 @@ exports.tasks = new nlevel.DocsSection(ldb, 'tasks', {
 	]
 });
 
+exports.tasks.getNextId = getNextId;
+
+function getNextId(callback) {
+	this.find({by: 'id', limit: 1, reverse: true}, function(err, docs) {
+		callback(err, !err && ++docs[0].id);
+	});
+}
+
 function pickId(doc) {
 	return {id: doc.id};
 }

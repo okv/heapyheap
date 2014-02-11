@@ -62,12 +62,27 @@ exports.bind = function(backend) {
 		}
 	});
 
-	backend.use('update', function(req, res, next) {
-		req.model.updateDate = Date.now();
-		db.tasks.put(req.model, function(err) {
-			if (err) return next(err);
-			res.end(req.model);
-		});
+	backend.use('create', 'update', function(req, res, next) {
+		var model = req.model;
+		Steppy(
+			function() {
+				model.updateDate = Date.now();
+				if (model.id) {
+					this.pass(model.id);
+				} else {
+					model.createDate = model.updateDate;
+					db.tasks.getNextId(this.slot());
+				}
+			},
+			function(err, id) {
+				model.id = id;
+				db.tasks.put(model, this.slot());
+			},
+			function(err) {
+				res.end(model);
+			},
+			next
+		);
 	});
 
 	return backend;

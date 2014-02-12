@@ -9,12 +9,17 @@ define(['app/views/base'], function(ParentView) {
 	};
 
 	View.onProjectChange = function() {
+		this.renderVersions($('#project').val());
+	};
+
+	View.renderVersions = function(project, version) {
 		var selProject = this.app.models.projects.findWhere({
-			name: $('#project').val()
+			name: project
 		});
 		this.$('#version').html(this._render('ctrls/opts', {
 			placeholder: 'Choose version',
 			opts: selProject ? selProject.get('versions') : [],
+			selected: version,
 			callAtOnce: true
 		}));
 	};
@@ -37,15 +42,14 @@ define(['app/views/base'], function(ParentView) {
 	};
 
 	View.render = function() {
-		var selProject = this.app.models.projects.findWhere({
-			name: this.model.get('project')
-		});
+		// render static fields once via template
 		this.$el.html(this._render('tasks/form', {
 			task: this.model.toJSON(),
 			projects: this.app.models.projects.pluck('name'),
-			versions: selProject ? selProject.get('versions') : [],
 			users: this.app.models.users.pluck('username')
 		}));
+		// render dynamic fields via view
+		this.renderVersions(this.model.get('project'), this.model.get('version'));
 		return this;
 	};
 

@@ -1,11 +1,17 @@
 include ../ctrls/opts
 
 if task.id
-	div #{task.id}
-
-input#title(type="text", value=task.title || '', style="width: 100%;")
-select#assignee
-	mixin opts(users, "choose assegnee", task.assignee)
-
+	div ##{task.id}
+div
+	input#title(type="text", value=task.title || '', style="width: 80%;")
+div
+	select#project
+		mixin opts(projects, "choose project", task.project)
+div
+	select#version
+		mixin opts(versions, "choose version", task.version)
+div
+	select#assignee
+		mixin opts(users, "choose assignee", task.assignee)
 div
 	button#save Save

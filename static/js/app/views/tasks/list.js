@@ -1,6 +1,6 @@
 'use strict';
 
-define(['app/views/base'], function(ParentView) {
+define(['app/views/base', 'underscore'], function(ParentView, _) {
 	var View = {};
 
 	View.events = {
@@ -10,14 +10,17 @@ define(['app/views/base'], function(ParentView) {
 		'click #task-add': 'onAddTask'
 	};
 
-	View.onFilterChange = function(event) {
-		var filters = {
+	View.getValues = function() {
+		return {
 			project: this.$('#filter-project').val(),
 			version: this.$('#filter-version').val(),
 			assignee: this.$('#filter-assignee').val(),
 			status: this.$('#filter-status').val()
 		};
-		this.navigate('tasks', {qs: filters});
+	};
+
+	View.onFilterChange = function(event) {
+		this.navigate('tasks', {qs: this.getValues()});
 	};
 
 	View.onSelectTask = function(event) {
@@ -25,7 +28,7 @@ define(['app/views/base'], function(ParentView) {
 	};
 
 	View.onAddTask = function() {
-		this.navigate('tasks/add');
+		this.navigate('tasks/add', {qs: _(this.getValues()).omit('status')});
 	};
 
 	View.initialize = function() {
@@ -55,19 +58,16 @@ define(['app/views/base'], function(ParentView) {
 	View.renderProjects = function(selected) {
 		this.$('#filter-project').html(this._render('ctrls/opts', {
 			placeholder: 'Any project',
-			opts: this.app.models.projects.map(function(project) {
-				return project.get('name');
-			}),
+			opts: this.app.models.projects.pluck('name'),
 			selected: selected,
 			callAtOnce: true
 		}));
 	};
 
 	View.renderVersions = function(selected) {
-		var selProjectName = this.$('#filter-project').val(),
-			selProject = this.app.models.projects.find(function(project) {
-				return project.get('name') === selProjectName;
-			});
+		var selProject = this.app.models.projects.findWhere({
+			name: this.$('#filter-project').val()
+		});
 		this.$('#filter-version').html(this._render('ctrls/opts', {
 			placeholder: 'Any version',
 			opts: selProject ? selProject.get('versions') : [],
@@ -79,9 +79,7 @@ define(['app/views/base'], function(ParentView) {
 	View.renderAssignees = function(selected) {
 		this.$('#filter-assignee').html(this._render('ctrls/opts', {
 			placeholder: 'Any assignee',
-			opts: this.app.models.users.map(function(user) {
-				return user.get('username');
-			}),
+			opts: this.app.models.users.pluck('username'),
 			selected: selected,
 			callAtOnce: true
 		}));

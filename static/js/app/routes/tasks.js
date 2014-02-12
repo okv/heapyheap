@@ -46,9 +46,9 @@ define([
 			}});
 		});
 
-		router.route('tasksAdd', 'tasks/add', 'tasksList', function(id) {
+		router.route('tasksAdd', 'tasks/add', 'tasksList', function(qs) {
 			// TODO: add method for instaces creation
-			var model = new models.tasks.model({id: id});
+			var model = new models.tasks.model(qs);
 			models.tasks._prepareModel(model);
 			new TasksForm({el: '#task-full', model: model}).render();
 		});

@@ -26,6 +26,7 @@ define(['app/views/base'], function(ParentView) {
 			.set('project', this.$('#project').val())
 			.set('version', this.$('#version').val())
 			.set('assignee', this.$('#assignee').val())
+			.set('description', this.$('#description').val())
 			.save(null, {success: function(model) {
 				self.navigate('tasks/' + model.get('id'))
 			}});

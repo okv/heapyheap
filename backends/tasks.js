@@ -33,9 +33,9 @@ exports.bind = function(backend) {
 					end.status = filters.status;
 				}
 			}
-			// sort by reversed updated date (see db.js)
-			start.rud = '';
-			end.rud = '';
+			// always sor by `order`
+			start.order = '';
+			end.order = '';
 			console.log('>>> start = ', start, end);
 			Steppy(
 				function() {

@@ -5,11 +5,9 @@ var env = process.env.NODE_ENV || 'development',
 	config = require('./config')(conf);
 
 var http = require('http'),
-	Steppy = require('twostep').Steppy,
 	nodeStatic = require('node-static'),
 	socketio = require('socket.io'),
-	backboneio = require('backbone.io'),
-	db = require('./db');
+	backboneio = require('backbone.io');
 
 
 console.log('config:', conf);
@@ -58,9 +56,7 @@ for (var name in backends) {
 var io = backboneio.listen(server, backendsHash);
 io.set('log level', 2);
 io.sockets.on('connection', function(socket) {
-	socket.on('login', function(login, password, callback) {
-		callback({login: 'spike'});
-	});
+	require('./service/login')(socket);
 });
 
 console.log(

@@ -2,7 +2,7 @@
 
 var Steppy = require('twostep').Steppy,
 	db = require('../db'),
-	utils = require('../utils');
+	helpers = require('../utils/helpers');
 
 exports.bind = function(backend) {
 	backend.use('read', function(req, res, next) {
@@ -20,7 +20,7 @@ exports.bind = function(backend) {
 			if (filters.project) start.project = filters.project;
 			if (filters.version) start.version = filters.version;
 			if (filters.assignee) start.assignee = filters.assignee;
-			var end = utils.extend({}, start);
+			var end = helpers.extend({}, start);
 			if (filters.status) {
 				if (filters.status === 'undone') {
 					start.status = 'in progress';

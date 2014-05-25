@@ -50,4 +50,9 @@ function order(doc) {
 }
 
 exports.projects = new nlevel.ValSection(ldb, 'projects');
-exports.users = new nlevel.ValSection(ldb, 'users');
+
+exports.users = new nlevel.DocsSection(ldb, 'users', {
+	projections: [
+		{key: {login: 1, password: 1}}
+	]
+});

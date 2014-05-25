@@ -9,7 +9,7 @@ exports.bind = function(backend) {
 		} else {
 			Steppy(
 				function() {
-					db.users.get(this.slot());
+					db.users.find({}, this.slot());
 				},
 				function(err, users) {
 					res.end(users);

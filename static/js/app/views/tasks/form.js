@@ -46,7 +46,7 @@ define(['app/views/base'], function(ParentView) {
 		this.$el.html(this._render('tasks/form', {
 			task: this.model.toJSON(),
 			projects: this.app.models.projects.pluck('name'),
-			users: this.app.models.users.pluck('username')
+			users: this.app.models.users.pluck('login')
 		}));
 		// render dynamic fields via view
 		this.renderVersions(this.model.get('project'), this.model.get('version'));

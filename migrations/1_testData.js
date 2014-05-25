@@ -4,7 +4,8 @@ var Steppy = require('twostep').Steppy,
 	db = require('../db'),
 	zlib = require('zlib'),
 	fs = require('fs'),
-	path = require('path');
+	path = require('path'),
+	createPassword = require('../utils/helpers/user').createPassword;
 
 
 exports.migrate = function(client, done) {
@@ -23,6 +24,7 @@ exports.migrate = function(client, done) {
 		function(err, buffer) {
 			var issues = JSON.parse(buffer.toString());
 			var tasks = issues.map(function(issue) {
+				var assignee = issue.assigned_to && issue.assigned_to.name;
 				var task = {
 					id: issue.id,
 					createDate: new Date(issue.created_on).getTime(),
@@ -30,7 +32,7 @@ exports.migrate = function(client, done) {
 					title: issue.subject,
 					description: issue.description,
 					version: issue.fixed_version && issue.fixed_version.name,
-					assignee: issue.assigned_to && issue.assigned_to.name,
+					assignee: assignee && usernameToLogin(assignee),
 					status: statusesHash[issue.status.name] || 'in progress'
 				};
 				if (task.assignee && !usersHash[task.assignee]) usersHash[task.assignee] = 1;
@@ -48,8 +50,12 @@ exports.migrate = function(client, done) {
 				return task;
 			});
 
-			var users = Object.keys(usersHash).map(function(username) {
-				return {username: username};
+			var users = Object.keys(usersHash).map(function(login) {
+				return {
+					id: login,
+					login: login,
+					password: createPassword('q')
+				};
 			});
 
 			var projects = Object.keys(projectsHash).map(function(name) {
@@ -73,4 +79,8 @@ exports.migrate = function(client, done) {
 function parseMajorVersion(version) {
 	var parts = /(\d+\.\d+)/.exec(version);
 	return parts && parts[1];
+}
+
+function usernameToLogin(username) {
+	return username.split(' ')[0].toLowerCase();
 }

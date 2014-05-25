@@ -79,7 +79,7 @@ define(['app/views/base', 'underscore'], function(ParentView, _) {
 	View.renderAssignees = function(selected) {
 		this.$('#filter-assignee').html(this._render('ctrls/opts', {
 			placeholder: 'Any assignee',
-			opts: this.app.models.users.pluck('username'),
+			opts: this.app.models.users.pluck('login'),
 			selected: selected,
 			callAtOnce: true
 		}));

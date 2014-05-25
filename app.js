@@ -30,9 +30,15 @@ var backends = require('./backends'),
 for (var name in backends) {
 	var backend = backboneio.createBackend();
 	backend.use(function(req, res, next) {
-		console.log('>>> backend:', req.backend);
-		console.log('>>> method:', req.method);
-		console.log('>>> model:', JSON.stringify(req.model));
+		var isRead = req.method === 'read',
+			isList = Array.isArray(req.model);
+		console.log(
+			'\n-- [%s] %s %s with params %s',
+			new Date(), req.backend, req.method + (
+				isRead ? (isList ? ' list' : ' one') : ''
+			),
+			JSON.stringify(isList ? req.options.data : req.model)
+		);
 		next();
 	});
 

@@ -6,9 +6,7 @@ var Steppy = require('twostep').Steppy,
 exports.bind = function(backend) {
 	backend.use('read', function(req, res, next) {
 		if (req.model.id) {
-			console.log('>>> getting single: ', req.model.id);
 		} else {
-			console.log('>>> getting list: ', req.options.data);
 			Steppy(
 				function() {
 					db.projects.get(this.slot());

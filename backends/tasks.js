@@ -9,16 +9,13 @@ exports.bind = function(backend) {
 		var data = req.options.data || {},
 			id = req.model.id || data.id;
 		if (id) {
-			console.log('>>> getting single: ', id);
 			db.tasks.get({id: id}, function(err, obj) {
 				if (err) return next(err);
-				console.log('>>> getting single: ', obj);
 				res.end(obj);
 			});
 		} else {
 			var filters = data,
 				start = {};
-			console.log('>>> getting list: ', filters);
 			if (!filters.limit) filters.limit = 10;
 			if (filters.project) start.project = filters.project;
 			if (filters.version) start.version = filters.version;
@@ -36,7 +33,6 @@ exports.bind = function(backend) {
 			// always sor by `order`
 			start.order = '';
 			end.order = '';
-			console.log('>>> start = ', start, end);
 			Steppy(
 				function() {
 					db.tasks.find({
@@ -57,7 +53,6 @@ exports.bind = function(backend) {
 					}
 				},
 				function(err, objs) {
-					console.log('>>> obj = ', objs[0])
 					res.end(objs);
 				},
 				next

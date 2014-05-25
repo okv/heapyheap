@@ -22,18 +22,26 @@ define(function() {
 		};
 
 		// wait until route will be rendered
-		function waitForRender(route, callback) {
+		function waitForRender(route, callback, start) {
+			if (!start) start = Date.now();
 			setTimeout(function() {
 				console.log('wait until %s will be rendered', route.name);
-				isRendered(route) ? callback() : waitForRender(route, callback);
+				if (isRendered(route)) {
+					callback();
+				} else {
+					if (Date.now() - start > 1000) throw new Error(
+						'Waiting timeout for render of ' + route.name + ' exceeded'
+					);
+					waitForRender(route, callback, start);
+				}
 			}, 10);
 		}
 		// is route rendered
 		function isRendered(route) {
 			console.log(
-				'%s is rendered %s ',
+				'%s is rendered: %s ',
 				route.name,
-				route.view && route.view.isRendered()
+				Boolean(route.view && route.view.isRendered())
 			);
 			return route.view && route.view.isRendered();
 		}

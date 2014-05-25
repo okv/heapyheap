@@ -18,7 +18,11 @@ console.log('environment:', env);
 var staticServer = new nodeStatic.Server(__dirname + '/static');
 var server = http.createServer(function(req, res) {
 	// serve index for all app pages
-	if (req.url == '/login' || req.url.indexOf('/tasks') === 0) {
+	if (
+		req.url == '/login' ||
+		req.url.indexOf('/tasks') === 0 ||
+		req.url.indexOf('/users') === 0
+	) {
 		staticServer.serveFile('/index.html', 200, {}, req, res);
 	} else {
 		staticServer.serve(req, res);

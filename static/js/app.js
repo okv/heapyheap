@@ -26,6 +26,7 @@ require([
 	'backbone', 'underscore',
 	'app/service', 'app/routes/router',
 	'app/routes/main', 'app/routes/tasks',
+	'app/routes/users',
 	'app/middleware/auth', 'app/middleware/routeRelations',
 	'app/views/base',
 	'app/models/tasks', 'app/models/projects', 'app/models/users',
@@ -34,6 +35,7 @@ require([
 	backbone, _,
 	Service, Router,
 	mainRoute, tasksRoute,
+	usersRoute,
 	authMiddleware, routeRelationsMiddleware,
 	BaseView,
 	TasksCollection, ProjectsCollection, UsersCollection,
@@ -70,6 +72,7 @@ require([
 		// routes
 		mainRoute(app.router);
 		tasksRoute(app.router);
+		usersRoute(app.router);
 
 		Backbone.history.start({pushState: true});
 	});

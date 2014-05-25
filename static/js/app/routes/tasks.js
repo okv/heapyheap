@@ -11,11 +11,14 @@ define([
 		var app = router.app,
 			models = app.models;
 
-		router.route('tasksList', 'tasks', function(qs) {
+		router.route('tasksList', 'tasks', 'mainLayout', function(qs) {
 			var self = this,
 				filters = qs || {};
 			models.tasks.fetch({data: filters, success: function(collection) {
-				self.view = new TasksListView({el: 'body', collection: collection}).render(filters);
+				self.view = new TasksListView({
+					el: '.main-layout',
+					collection: collection
+				}).render(filters);
 			// reset collection coz client merge breaks server sorting
 			}, reset: true});
 		});

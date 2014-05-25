@@ -1,18 +1,24 @@
 'use strict';
 
 var Steppy = require('twostep').Steppy,
-	db = require('../db');
+	db = require('../db'),
+	helpers = require('../utils/helpers'),
+	errors = require('../utils/errors');
 
 module.exports = function(socket) {
 	socket.on('login', function(login, password, callback) {
 		Steppy(
 			function() {
-				db.users.get({login: login, password: password}, this.slot());
+				var stepCallback = this.slot();
+				db.users.get({
+					login: login,
+					password: helpers.createPassword(password)
+				}, function(err, user) {
+					if (err) err = new errors.WrongCredentials();
+					stepCallback(err, user);
+				});
 			},
-			function(err, user) {
-				//callback(user);
-				callback({login: 'spike'});
-			}
+			callback
 		);
 	});
 };

@@ -16,8 +16,10 @@ define(['app/views/base'], function(ParentView) {
 		self.app.service.login(
 			self.$('#login').val(),
 			self.$('#password').val(),
-			function(user) {
-				if (user.login) {
+			function(err, user) {
+				if (err) {
+					self.$('.errors').text(err.userMessage || 'Some login error');
+				} else {
 					console.log('retrived user: ', user)
 					self.app.user = user;
 					// navigate to `returnUrl` or default route

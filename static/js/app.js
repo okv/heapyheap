@@ -47,8 +47,16 @@ require([
 			service: new Service({socket: backbone.io.connect()}),
 			models: {},
 			user: null,
+			token: null,
 			defaultRoute: 'tasks',
 			returnUrl: null
+		};
+
+		// patch sync for always send token
+		var sync = Backbone.sync;
+		Backbone.sync = function(method, model, options) {
+			options.token = app.token
+			sync.call(this, method, model, options);
 		};
 
 		// share app with router and views

@@ -41,21 +41,29 @@ function pickId(doc) {
 	return {id: doc.id};
 }
 
-var maxTime = new Date('03:14:07 UTC 2138-01-19').getTime();
 // reversed update date - for sorting forward (it's fatster for leveldb then
 // reverse: true, see levelup reverse notes for details) but have documents
 // sorted by update date in descending order
 // TODO: maybe use reverse: true coz too many projections needed for current hack
+var maxTime = new Date('03:14:07 UTC 2138-01-19').getTime();
 function order(doc) {
 	return maxTime - doc.updateDate;
 }
 
 exports.projects = new nlevel.ValSection(ldb, 'projects');
 
+// `password` should be omitted for all projections due security reasons
+// `id` projection should not be used coz password can't be omitted for it
+// (`login` projection should be used instead)
 exports.users = new nlevel.DocsSection(ldb, 'users', {
 	projections: [
-		{key: {login: 1, password: 1}, value: function(user) {
-			return helpers.omit(user, 'password');
-		}}
+		{key: {login: 1}, value: omitPassword},
+		{key: {login: 1, password: 1}, value: omitPassword}
 	]
 });
+
+function omitPassword(doc) {
+	return helpers.omit(doc, 'password');
+}
+
+exports.tokens = new nlevel.DocsSection(ldb, 'tokens', {});

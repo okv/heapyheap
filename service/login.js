@@ -18,6 +18,15 @@ module.exports = function(socket) {
 					stepCallback(err, user);
 				});
 			},
+			function(err, user) {
+				var token = helpers.createToken(user);
+				this.pass({user: user, token: token});
+				db.tokens.put({
+					id: token,
+					updated: Date.now(),
+					user: user.login
+				}, this.slot());
+			},
 			callback
 		);
 	});

@@ -27,33 +27,8 @@ var server = http.createServer(function(req, res) {
 	}
 });
 
-var backends = require('./backends'),
-	backendsHash = {};
-for (var name in backends) {
-	var backend = backboneio.createBackend();
-	backend.use(function(req, res, next) {
-		var isRead = req.method === 'read',
-			isList = Array.isArray(req.model);
-		console.log(
-			'\n-- [%s] %s %s with params %s',
-			new Date(), req.backend, req.method + (
-				isRead ? (isList ? ' list' : ' one') : ''
-			),
-			JSON.stringify(isList ? req.options.data : req.model)
-		);
-		next();
-	});
-
-	backends[name].bind(backend);
-	backendsHash[name] = backend;
-
-	// log backend errors
-	backend.use(function(err, req, res, next) {
-		if (err) console.log(err.stack || err);
-	});
-}
-
-var io = backboneio.listen(server, backendsHash);
+var backends = require('./backends');
+var io = backboneio.listen(server, backends);
 io.set('log level', 2);
 io.sockets.on('connection', function(socket) {
 	require('./service/login')(socket);

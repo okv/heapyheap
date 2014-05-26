@@ -2,7 +2,8 @@
 
 var nlevel = require('nlevel'),
 	config = require('./config')(),
-	ldb = nlevel.db(config.db.path, {valueEncoding: 'json'});
+	ldb = nlevel.db(config.db.path, {valueEncoding: 'json'}),
+	helpers = require('./utils/helpers');
 
 
 exports.tasks = new nlevel.DocsSection(ldb, 'tasks', {
@@ -53,6 +54,8 @@ exports.projects = new nlevel.ValSection(ldb, 'projects');
 
 exports.users = new nlevel.DocsSection(ldb, 'users', {
 	projections: [
-		{key: {login: 1, password: 1}}
+		{key: {login: 1, password: 1}, value: function(user) {
+			return helpers.omit(user, 'password');
+		}}
 	]
 });

@@ -13,7 +13,7 @@ define(['underscore'], function(_) {
 			var app = this.router.app;
 			if (!app.currentUser && !_(publicRouteNames).contains(route.name)) {
 				app.returnUrl = window.location.pathname + window.location.search;
-				this.router.navigate('login');
+				this.router.navigate('');
 			} else if (
 				app.currentUser && route.name !== 'login' &&
 				params.afterLogin && !isAfterLoginCalled

@@ -17,7 +17,7 @@ define([
 			new LoginView({el: 'body'}).render();
 		});
 
-		router.route('mainLayout', '', function() {
+		router.route('mainLayout', '__mainLayout__', function() {
 			this.view = new MainLayoutView({el: 'body'}).render();
 		});
 

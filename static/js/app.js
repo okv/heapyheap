@@ -42,21 +42,30 @@ require([
 	$
 ) {
 	$(document).ready(function() {
+		var storage = (
+			typeof sessionStorage !== 'udefined' ? sessionStorage : null
+		);
 		var app = {
 			router: new Router(),
 			service: new Service({socket: backbone.io.connect()}),
 			models: {},
-			currentUser: null,
+			currentUser: storage && storage.currentUser ? JSON.parse(
+				storage.currentUser
+			) : null,
 			defaultRoute: 'tasks',
 			returnUrl: null
 		};
 
 		app.login = function(data) {
-			app.currentUser = data.user;
-			app.setToken(data.token);
+			this.currentUser = data.user;
+			this.setToken(data.token);
+			if (storage) {
+				storage.currentUser = JSON.stringify(data.user);
+				storage.currentToken = data.token;
+			}
 		};
 
-		var currentToken = null;
+		var currentToken = storage ? storage.currentToken : null;
 		app.setToken = function(token) {
 			currentToken = token;
 		};
@@ -71,6 +80,10 @@ require([
 		app.logout = function() {
 			this.setToken(null);
 			delete this.currentUser;
+			if (storage) {
+				delete storage.currentUser;
+				delete storage.currentToken;
+			}
 			this.router.navigate('');
 		};
 

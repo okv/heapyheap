@@ -6,7 +6,6 @@ work in progress...
 
 TODO
 
-* Add users (register, login, logout, list, approve, block, session)
 * Add timers (changes status, partisipants)
 * Add spent time(today, yesterday) to user page
 * Add ability to edit spent time records
@@ -21,6 +20,8 @@ configuring by user
 * Task description in markdown
 * Add related tasks
 * Add "review" status
+* Fix url parameters when back/forward
 * Add remove task button
 * Add "more" button to task list
 * Add server validation
+* Add to users: register, approve, block, secure session

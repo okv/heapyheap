@@ -7,7 +7,9 @@
 			.current-timer-info__part
 				include ../ctrls/timer
 	.header__right
-		.link(href="javascript:void(0)") Иван Иванов
+		.link(href="javascript:void(0)")
+			| #{currentUser.login} 
+			span#logout-link logout
 
 	.navi
 		a(href="/tasks") Tasks

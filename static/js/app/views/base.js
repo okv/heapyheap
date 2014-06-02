@@ -10,6 +10,8 @@ define(['backbone', 'app/template'], function(backbone, template) {
 	};
 
 	View._render = function(templateName, params) {
+		params = params || {};
+		params.currentUser = this.app.currentUser;
 		return template.render(templateName, params);
 	};
 

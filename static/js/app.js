@@ -46,9 +46,14 @@ require([
 			router: new Router(),
 			service: new Service({socket: backbone.io.connect()}),
 			models: {},
-			user: null,
+			currentUser: null,
 			defaultRoute: 'tasks',
 			returnUrl: null
+		};
+
+		app.login = function(data) {
+			app.currentUser = data.user;
+			app.setToken(data.token);
 		};
 
 		var currentToken = null;
@@ -61,6 +66,12 @@ require([
 			options = _(options).clone();
 			options.token = currentToken;
 			sync.call(this, method, model, options);
+		};
+
+		app.logout = function() {
+			this.setToken(null);
+			delete this.currentUser;
+			this.router.navigate('');
 		};
 
 		// share app with router and views

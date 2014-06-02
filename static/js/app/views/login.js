@@ -32,10 +32,7 @@ define(['app/views/base'], function(ParentView) {
 
 	View.render = function() {
 		this.$el.html(this._render('login'));
-		// dev autologin
-		// this.$('#login').val('spike');
-		// this.$('#password').val('gkpod');
-		// this.$('#login-button').click();
+		return this;
 	};
 
 	return ParentView.extend(View);

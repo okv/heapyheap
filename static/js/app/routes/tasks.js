@@ -32,7 +32,6 @@ define([
 			}
 			// always fetch latest model from server before viewing it
 			model.fetch({success: function(model) {
-				console.log('>>> fetched model = ', model.toJSON())
 				new TasksView({el: '#task-full', model: model}).render();
 			}});
 		});

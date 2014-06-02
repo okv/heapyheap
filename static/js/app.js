@@ -47,15 +47,19 @@ require([
 			service: new Service({socket: backbone.io.connect()}),
 			models: {},
 			user: null,
-			token: null,
 			defaultRoute: 'tasks',
 			returnUrl: null
 		};
 
+		var currentToken = null;
+		app.setToken = function(token) {
+			currentToken = token;
+		};
 		// patch sync for always send token
 		var sync = Backbone.sync;
 		Backbone.sync = function(method, model, options) {
-			options.token = app.token
+			options = _(options).clone();
+			options.token = currentToken;
 			sync.call(this, method, model, options);
 		};
 

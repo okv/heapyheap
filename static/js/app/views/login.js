@@ -21,7 +21,7 @@ define(['app/views/base'], function(ParentView) {
 					self.$('.errors').text(err.userMessage || 'Some login error');
 				} else {
 					console.log('retrived login data: ', data)
-					self.app.user = data.user;
+					self.app.currentUser = data.user;
 					self.app.setToken(data.token);
 					// navigate to `returnUrl` or default route
 					self.navigate(self.app.returnUrl || self.app.defaultRoute);

@@ -10,7 +10,7 @@ define([
 
 		var app = router.app;
 		router.route('index', '', function() {
-			router.navigate(app.user ? app.defaultRoute : 'login');
+			router.navigate(app.currentUser ? app.defaultRoute : 'login');
 		});
 
 		router.route('login', 'login', function() {

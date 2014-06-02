@@ -11,14 +11,14 @@ define(['underscore'], function(_) {
 		return function(route, next) {
 			console.log('auth middleware');
 			var app = this.router.app;
-			if (!app.user && !_(publicRouteNames).contains(route.name)) {
+			if (!app.currentUser && !_(publicRouteNames).contains(route.name)) {
 				app.returnUrl = window.location.pathname + window.location.search;
 				this.router.navigate('login');
 			} else if (
-				app.user && route.name !== 'login' &&
+				app.currentUser && route.name !== 'login' &&
 				params.afterLogin && !isAfterLoginCalled
 			) {
-				params.afterLogin(app.user, next);
+				params.afterLogin(app.currentUser, next);
 				isAfterLoginCalled = true;
 			} else {
 				next();

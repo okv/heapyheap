@@ -23,7 +23,6 @@ module.exports = function(socket) {
 				this.pass({user: user, token: token});
 				db.tokens.put({
 					id: token,
-					updated: Date.now(),
 					user: user.login
 				}, this.slot());
 			},

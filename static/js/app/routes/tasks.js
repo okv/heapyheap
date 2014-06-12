@@ -11,7 +11,10 @@ define([
 		var app = router.app,
 			models = app.models;
 
-		router.route('tasksList', 'tasks', 'mainLayout', function(qs) {
+		router.route('tasks', {
+			name: 'tasksList',
+			parentName: 'mainLayout'
+		}, function(qs) {
 			var self = this,
 				filters = qs || {};
 			models.tasks.fetch({data: filters, success: function(collection) {
@@ -23,7 +26,7 @@ define([
 			}, reset: true});
 		});
 
-		router.route('tasksView', 'tasks/:id', 'tasksList', function(id) {
+		router.route('tasks/:id', {parentName: 'tasksList'}, function(id) {
 			var model = models.tasks.get(id);
 			if (!model) {
 				// TODO: add method for instaces creation
@@ -36,7 +39,7 @@ define([
 			}});
 		});
 
-		router.route('tasksEdit', 'tasks/:id/edit', 'tasksList', function(id) {
+		router.route('tasks/:id/edit', {parentName: 'tasksList'}, function(id) {
 			var model = models.tasks.get(id);
 			if (!model) {
 				// TODO: add method for instaces creation
@@ -48,7 +51,7 @@ define([
 			}});
 		});
 
-		router.route('tasksAdd', 'tasks/add', 'tasksList', function(qs) {
+		router.route('tasks/add', {parentName: 'tasksList'}, function(qs) {
 			// TODO: add method for instaces creation
 			var model = new models.tasks.model(qs);
 			models.tasks._prepareModel(model);

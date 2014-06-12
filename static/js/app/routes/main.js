@@ -9,15 +9,15 @@ define([
 	return function(router) {
 
 		var app = router.app;
-		router.route('index', '', function() {
+		router.route('', function() {
 			router.navigate(app.currentUser ? app.defaultRoute : 'login');
 		});
 
-		router.route('login', 'login', function() {
+		router.route('login', function() {
 			new LoginView({el: 'body'}).render();
 		});
 
-		router.route('mainLayout', '__mainLayout__', function() {
+		router.route('__mainLayout__', {name: 'mainLayout'}, function() {
 			this.view = new MainLayoutView({el: 'body'}).render();
 		});
 

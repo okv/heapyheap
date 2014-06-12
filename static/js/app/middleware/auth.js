@@ -5,17 +5,17 @@
  */
 define(['underscore'], function(_) {
 	return function(params) {
-		var publicRouteNames = ['login', 'index'];
+		var publicRoutesUrls = ['login', ''];
 		params = params || {};
 		var isAfterLoginCalled = false;
 		return function(route, next) {
 			console.log('auth middleware');
 			var app = this.router.app;
-			if (!app.currentUser && !_(publicRouteNames).contains(route.name)) {
+			if (!app.currentUser && !_(publicRoutesUrls).contains(route.url)) {
 				app.returnUrl = window.location.pathname + window.location.search;
 				this.router.navigate('');
 			} else if (
-				app.currentUser && route.name !== 'login' &&
+				app.currentUser && route.url !== 'login' &&
 				params.afterLogin && !isAfterLoginCalled
 			) {
 				params.afterLogin(app.currentUser, next);

@@ -11,7 +11,10 @@ define([
 		var app = router.app,
 			models = app.models;
 
-		router.route('usersList', 'users', 'mainLayout', function() {
+		router.route('users', {
+			name: 'usersList',
+			parentName: 'mainLayout'
+		}, function() {
 			var self = this;
 			models.users.fetch({success: function(collection) {
 				self.view = new UsersListView({

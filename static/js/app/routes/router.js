@@ -11,11 +11,12 @@ define(['backbone', 'underscore'], function(backbone, _) {
 	};
 
 	var superRoute = backbone.Router.prototype.route;
-	Router.route = function(name, url, parent, callback) {
-		if (_(parent).isFunction()) {
-			callback = parent;
-			parent = null;
+	Router.route = function(url, params, callback) {
+		if (_(params).isFunction()) {
+			callback = params;
+			params = null;
 		}
+		params = params || {};
 
 		var self = this,
 			oldCallback = callback;
@@ -27,23 +28,30 @@ define(['backbone', 'underscore'], function(backbone, _) {
 			});
 		};
 
-		var route = {url: url, name: name, callback: callback, router: self};
-
-		if (this.routes[name]) throw new Error('Duplicate route ' + name);
-		this.routes[name] = route;
-
-		if (parent) {
-			if (this.routes[parent]) {
-				parent = this.routes[parent];
-			} else {
-				throw new Error(
-					'Unrecognized parent router ' + parent + ' for ' + name
-				);
-			}
-			route.parent = parent;
+		var route = {url: url, callback: callback, router: self};
+		if (params.name) {
+			route.name = params.name;
+			if (this.routes[route.name]) throw new Error(
+				'Duplicate route ' + route.name
+			);
+			this.routes[route.name] = route;
 		}
 
-		superRoute.call(this, url, name, callback);
+		if (params.parentName) {
+			if (this.routes[params.parentName]) {
+				route.parent = this.routes[params.parentName];
+			} else {
+				throw new Error(
+					'Unrecognized parent router ' + params.parentName +
+					' for ' + url
+				);
+			}
+		}
+
+		var args = [url];
+		if (params.name) args.push(params.name);
+		args.push(callback);
+		superRoute.apply(this, args);
 	};
 
 	var superNavigate = backbone.Router.prototype.navigate;

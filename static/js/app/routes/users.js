@@ -11,7 +11,8 @@ define([
 		var app = router.app,
 			models = app.models;
 
-		router.route('users', {
+		router.route({
+			url: 'users',
 			name: 'usersList',
 			parentName: 'mainLayout'
 		}, function() {

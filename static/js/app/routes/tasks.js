@@ -11,7 +11,8 @@ define([
 		var app = router.app,
 			models = app.models;
 
-		router.route('tasks', {
+		router.route({
+			url: 'tasks',
 			name: 'tasksList',
 			parentName: 'mainLayout'
 		}, function(qs) {
@@ -26,7 +27,10 @@ define([
 			}, reset: true});
 		});
 
-		router.route('tasks/:id', {parentName: 'tasksList'}, function(id) {
+		router.route({
+			url: 'tasks/:id',
+			parentName: 'tasksList'
+		}, function(id) {
 			var model = models.tasks.get(id);
 			if (!model) {
 				// TODO: add method for instaces creation
@@ -39,7 +43,10 @@ define([
 			}});
 		});
 
-		router.route('tasks/:id/edit', {parentName: 'tasksList'}, function(id) {
+		router.route({
+			url: 'tasks/:id/edit',
+			parentName: 'tasksList'
+		}, function(id) {
 			var model = models.tasks.get(id);
 			if (!model) {
 				// TODO: add method for instaces creation
@@ -51,7 +58,10 @@ define([
 			}});
 		});
 
-		router.route('tasks/add', {parentName: 'tasksList'}, function(qs) {
+		router.route({
+			url: 'tasks/add',
+			parentName: 'tasksList'
+		}, function(qs) {
 			// TODO: add method for instaces creation
 			var model = new models.tasks.model(qs);
 			models.tasks._prepareModel(model);

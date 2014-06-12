@@ -11,11 +11,7 @@ define(['backbone', 'underscore'], function(backbone, _) {
 	};
 
 	var superRoute = backbone.Router.prototype.route;
-	Router.route = function(url, params, callback) {
-		if (_(params).isFunction()) {
-			callback = params;
-			params = null;
-		}
+	Router.route = function(params, callback) {
 		params = params || {};
 
 		var self = this,
@@ -28,7 +24,7 @@ define(['backbone', 'underscore'], function(backbone, _) {
 			});
 		};
 
-		var route = {url: url, callback: callback, router: self};
+		var route = {callback: callback, router: self};
 		if (params.name) {
 			route.name = params.name;
 			if (this.routes[route.name]) throw new Error(
@@ -43,15 +39,18 @@ define(['backbone', 'underscore'], function(backbone, _) {
 			} else {
 				throw new Error(
 					'Unrecognized parent router ' + params.parentName +
-					' for ' + url
+					' for ' + params.name || params.url
 				);
 			}
 		}
 
-		var args = [url];
-		if (params.name) args.push(params.name);
-		args.push(callback);
-		superRoute.apply(this, args);
+		if ('url' in params) {
+			route.url = params.url;
+			var args = [params.url];
+			if (params.name) args.push(params.name);
+			args.push(callback);
+			superRoute.apply(this, args);
+		}
 	};
 
 	var superNavigate = backbone.Router.prototype.navigate;

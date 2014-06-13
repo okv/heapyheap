@@ -1,56 +1,47 @@
 'use strict';
 
-define(['app/views/base'], function(ParentView) {
-	var View = {};
+define([
+	'app/views/base', 'app/templates/tasks/form',
+	'app/views/components/taskParams'
+], function(
+	ParentView, template,
+	TaskParamsView
+) {
+	var View = {
+		template: template
+	};
 
 	View.events = {
-		'change #project': 'onProjectChange',
-		'click #save': 'onSave'
+		'click #save': 'onSaveClick'
 	};
 
-	View.onProjectChange = function() {
-		this.renderVersions($('#project').val());
+	View.initialize = function() {
+		this.setView(
+			new TaskParamsView({
+				data: {
+					selected: this.model.pick('project', 'version', 'assignee'),
+					fields: ['project', 'version', 'assignee']
+				}
+			}),
+			'#params'
+		);
 	};
 
-	View.renderVersions = function(project, version) {
-		var selProject = this.app.models.projects.findWhere({
-			name: project
-		});
-		this.$('#version').html(this._render('ctrls/opts', {
-			placeholder: 'Choose version',
-			opts: selProject ? selProject.get('versions') : [],
-			selected: version,
-			callAtOnce: true
-		}));
-	};
-
-	View.onSave = function() {
+	View.onSaveClick = function() {
 		var self = this;
 		this.model
-			.set('title', this.$('#title').val())
-			.set('project', this.$('#project').val())
-			.set('version', this.$('#version').val())
-			.set('assignee', this.$('#assignee').val())
-			.set('description', this.$('#description').val())
+			.set({
+				title: this.$('#title').val(),
+				description: this.$('#description').val(),
+			})
+			.set(this.getView('#params').getValue())
 			.save(null, {success: function(model) {
 				self.navigate('tasks/' + model.get('id'))
 			}});
 	};
 
-	View.initialize = function() {
-		ParentView.prototype.initialize.apply(this, arguments);
-	};
-
-	View.render = function() {
-		// render static fields once via template
-		this.$el.html(this._render('tasks/form', {
-			task: this.model.toJSON(),
-			projects: this.app.models.projects.pluck('name'),
-			users: this.app.models.users.pluck('login')
-		}));
-		// render dynamic fields via view
-		this.renderVersions(this.model.get('project'), this.model.get('version'));
-		return this;
+	View.getData = function() {
+		return {task: this.model.toJSON()};
 	};
 
 	return ParentView.extend(View);

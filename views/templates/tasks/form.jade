@@ -1,17 +1,10 @@
-include ../ctrls/opts
 
 if task.id
 	div ##{task.id}
 div
 	input#title(type="text", value=task.title, style="width: 80%;")
 div
-	select#project
-		mixin opts(projects, "choose project", task.project)
-div
-	select#version
-div
-	select#assignee
-		mixin opts(users, "choose assignee", task.assignee)
+	#params
 div
 	textarea#description(style="width: 80%; height: 200px;") #{task.description}
 div

@@ -1,11 +1,12 @@
 'use strict';
 
-define(['esencia/view'], function(ParentView) {
+define(['esencia/view', 'underscore'], function(ParentView, _) {
 
 	var View = {};
 
 	View.getHelpers = function() {
 		return {
+			_: _,
 			currentUser: this.app.currentUser
 		};
 	};

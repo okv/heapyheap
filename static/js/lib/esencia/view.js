@@ -525,11 +525,11 @@ define([
 		_(events).each(function(method, key, obj) {
 			if (key.indexOf('view:') === 0) {
 				if (!_.isFunction(method)) method = self[events[key]];
-				var parts = key.split(' '),
+				var parts = key.replace(/ *, */g, ',').split(' '),
 					event = parts[0].split(':')[1],
-					selectors = parts[1].replace(/, */g, ',');
+					selectors = parts[1].split(',');
 				// fill viewEvents
-				_(selectors.split(',')).each(function(selector) {
+				_(selectors).each(function(selector) {
 					if (!self.viewEvents[selector]) {
 						self.viewEvents[selector] = [];
 					}

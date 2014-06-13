@@ -1,9 +1,9 @@
 'use strict';
 
 define([
-	'baDebug', 'backbone', 'underscore', 'utils/render', 'utils/helpers', 'jquery'
+	'backbone', 'underscore', 'jquery'
 ], function(
-	debug, backbone, _, render, helpers, $
+	backbone, _, $
 ) {
 	/*
 	 * Helpers
@@ -16,12 +16,6 @@ define([
 	 */
 
 	var View = {};
-
-	/*
-	 * Add helpers to view
-	 */
-
-	View.helpers = helpers;
 
 	/*
 	 * Override constructor
@@ -40,6 +34,9 @@ define([
 
 		// Nested views hash is empty by default
 		this.views = {};
+
+		// Events bound to the nested views
+		this.viewEvents = {};
 
 		this.data = this.data || {};
 
@@ -138,6 +135,10 @@ define([
 		return true;
 	};
 
+	View.getHelpers = function() {
+		return {};
+	};
+
 	/*
 	 * Render template to $el element
 	 *
@@ -149,13 +150,10 @@ define([
 			throw new Error('Template should be a function.');
 		}
 
-		data = _({
-			currentAccount: this.app.currentAccount.toJSON(),
-			config: _(this.app.config).clone()
-		}).extend(data);
+		data = _(this.getHelpers()).extend(data);
 
 		// get html
-		var templateHtml = render(this.template, data);
+		var templateHtml = this.template(data);
 
 		// insert html to $el
 		if (this.noel) {
@@ -397,6 +395,8 @@ define([
 					view.parent = self;
 				});
 
+				this.delegateViewsEvents(selector, views);
+
 				break;
 
 			case 'remove':
@@ -516,25 +516,44 @@ define([
 		return $selector.length ? $selector.data('view') : null;
 	};
 
-	/*
-	 * Just convenient shortcut for navigation
-	 */
+	var superDelegateEvents = backbone.View.prototype.delegateEvents;
+	View.delegateEvents = function(events) {
+		var self = this;
+		if (!(events || (events = _.result(this, 'events')))) return this;
+		events = _(events).clone();
+		// bind all prefixed events to view then call native delegate events
+		_(events).each(function(method, key, obj) {
+			if (key.indexOf('view:') === 0) {
+				if (!_.isFunction(method)) method = self[events[key]];
+				var parts = key.split(' '),
+					event = parts[0].split(':')[1],
+					selectors = parts[1].replace(/, */g, ',');
+				// fill viewEvents
+				_(selectors.split(',')).each(function(selector) {
+					if (!self.viewEvents[selector]) {
+						self.viewEvents[selector] = [];
+					}
+					self.viewEvents[selector].push({event: event, handler: method});
+				});
+				delete obj[key];
+			}
+		});
+		// bind events to the views
+		_(self.viewEvents).each(function(listeners, selector) {
+			self.delegateViewsEvents(selector, self.getViews(selector));
+		});
+		return superDelegateEvents.call(this, events);
+	};
 
-	View.navigate = function(fragment) {
-		var args = _.toArray(arguments);
-
-		if (_.isObject(fragment)) {
-			// get fragment from history
-			fragment = this.app.history.fragment || '';
-
-			// remove query string from fragment and add root path
-			fragment = this.app.root + fragment.replace(/\?.*/, '');
-
-			// add it to args
-			args.unshift(fragment);
-		}
-
-		this.app.navigate.apply(this.app, args);
+	View.delegateViewsEvents = function(selector, views) {
+		var self = this;
+		var listeners = self.viewEvents[selector];
+		_(listeners).each(function(listener) {
+			_(views).each(function(view) {
+				self.listenTo(view,	listener.event,	listener.handler);
+			});
+		});
+		return self;
 	};
 
 	return backbone.View.extend(View);

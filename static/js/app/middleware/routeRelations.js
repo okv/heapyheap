@@ -38,12 +38,9 @@ define(function() {
 		}
 		// is route rendered
 		function isRendered(route) {
-			console.log(
-				'%s is rendered: %s ',
-				route.name,
-				Boolean(route.view && route.view.isRendered())
-			);
-			return route.view && route.view.isRendered();
+			var isRendered = Boolean(route.view && route.view.isAttached());
+			console.log('%s is rendered: %s ', route.name, isRendered);
+			return isRendered;
 		}
 	};
 });

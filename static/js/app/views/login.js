@@ -1,17 +1,19 @@
 'use strict';
 
-define(['app/views/base'], function(ParentView) {
-	var View = {};
+define([
+	'app/views/base', 'app/templates/login'
+], function(
+	ParentView, template
+) {
+	var View = {
+		template: template
+	};
 
 	View.events = {
-		'click #login-button': 'login'
+		'click #login-button': 'onLoginButtonClick'
 	};
 
-	View.initialize = function() {
-		ParentView.prototype.initialize.apply(this, arguments);
-	};
-
-	View.login = function() {
+	View.onLoginButtonClick = function() {
 		var self = this;
 		self.app.service.login(
 			self.$('#login').val(),
@@ -28,11 +30,6 @@ define(['app/views/base'], function(ParentView) {
 				}
 			}
 		);
-	};
-
-	View.render = function() {
-		this.$el.html(this._render('login'));
-		return this;
 	};
 
 	return ParentView.extend(View);

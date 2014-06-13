@@ -1,46 +1,34 @@
 'use strict';
 
-define(['app/views/base', 'underscore'], function(ParentView, _) {
-	var View = {};
+define([
+	'app/views/base', 'underscore', 'app/templates/tasks/list',
+	'app/views/components/select', 'app/views/tasks/item'
+], function(
+	ParentView, _, template,
+	SelectView, TaskItemView
+) {
+	var View = {
+		template: template
+	};
 
 	View.events = {
-		'change #filter-project': 'onProjectChange',
-		'change #filter-version,#filter-assignee,#filter-status': 'onFilterChange',
-		'click #tasks-table-body .tasks__item': 'onSelectTask',
-		'click #task-add': 'onAddTask'
-	};
-
-	View.getValues = function() {
-		return {
-			project: this.$('#filter-project').val(),
-			version: this.$('#filter-version').val(),
-			assignee: this.$('#filter-assignee').val(),
-			status: this.$('#filter-status').val()
-		};
-	};
-
-	View.onFilterChange = function(event) {
-		this.navigate('tasks', {qs: this.getValues()});
-	};
-
-	View.onSelectTask = function(event) {
-		this.navigate('tasks/' + this.$(event.currentTarget).data('task-id'));
-	};
-
-	View.onAddTask = function() {
-		this.navigate('tasks/add', {qs: _(this.getValues()).omit('status')});
+		'view:change #filter-project': 'onProjectChange',
+		'view:change #filter-version,#filter-assignee,#filter-status': 'onFilterChange',
+		'click #task-add': 'onAddTaskClick'
 	};
 
 	View.initialize = function() {
-		ParentView.prototype.initialize.apply(this, arguments);
 		var self = this;
 		this.collection.each(function(model) {
 			self.listenTo(model, 'change:title change:status', function(model) {
-				this.$(
-					'#tasks-table-body [data-task-id=' + model.get('id') + ']'
-				).replaceWith(
-					this._render('tasks/item', {task: model.toJSON()})
+				this.setView(
+					new TaskItemView(
+						{data: {task: model.toJSON()}}
+					),
+					'#items',
+					this.collection.indexOf(model)
 				);
+				this.render();
 			});
 		});
 		// sync tasks which changed remotely
@@ -48,57 +36,96 @@ define(['app/views/base', 'underscore'], function(ParentView, _) {
 			var localModel = this.collection.get(model.id);
 			if (localModel) localModel.set(model);
 		});
+
+		this.setFilterProjectView();
+		this.setFilterVersionView();
+		this.setFilterAssigneeView();
+		this.setFilterStatusView();
+		this.setTasks();
 	};
 
-	View.onProjectChange = function() {
-		this.renderVersions();
-		this.$('#filter-version').change();
+	View.setFilterProjectView = function() {
+		this.setView(
+			new SelectView({
+				data: {
+					placeholder: 'Any project',
+					opts: this.app.models.projects.pluck('name'),
+					selected: this.data.filters.project
+				}
+			}),
+			'#filter-project'
+		);
 	};
 
-	View.renderProjects = function(selected) {
-		this.$('#filter-project').html(this._render('ctrls/opts', {
-			placeholder: 'Any project',
-			opts: this.app.models.projects.pluck('name'),
-			selected: selected,
-			callAtOnce: true
-		}));
-	};
-
-	View.renderVersions = function(selected) {
+	View.setFilterVersionView = function() {
 		var selProject = this.app.models.projects.findWhere({
-			name: this.$('#filter-project').val()
+			name: this.getView('#filter-project').getValue()
 		});
-		this.$('#filter-version').html(this._render('ctrls/opts', {
-			placeholder: 'Any version',
-			opts: selProject ? selProject.get('versions') : [],
-			selected: selected,
-			callAtOnce: true
-		}));
+		this.setView(
+			new SelectView({
+				data: {
+					placeholder: 'Any version',
+					opts: selProject ? selProject.get('versions') : [],
+					selected: this.data.filters.version
+				}
+			}),
+			'#filter-version'
+		);
 	};
 
-	View.renderAssignees = function(selected) {
-		this.$('#filter-assignee').html(this._render('ctrls/opts', {
-			placeholder: 'Any assignee',
-			opts: this.app.models.users.pluck('login'),
-			selected: selected,
-			callAtOnce: true
-		}));
+	View.setFilterAssigneeView = function() {
+		this.setView(
+			new SelectView({
+				data: {
+					placeholder: 'Any assignee',
+					opts: this.app.models.users.pluck('login'),
+					selected: this.data.filters.assignee
+				}
+			}),
+			'#filter-assignee'
+		);
 	};
 
-	View.renderTableRows = function() {
-		this.$('#tasks-table-body').html(this._render('tasks/items', {
-			tasks: this.collection.toJSON()
-		}));
+	View.setFilterStatusView = function() {
+		this.setView(
+			new SelectView({
+				data: {
+					placeholder: 'Any status',
+					opts: ['undone', 'waiting', 'in progress', 'done'],
+					selected: this.data.filters.status
+				}
+			}),
+			'#filter-status'
+		);
 	};
 
-	View.render = function(filters) {
-		this.$el.html(this._render('tasks/list'));
-		this.renderProjects(filters.project);
-		this.renderVersions(filters.version);
-		this.renderAssignees(filters.assignee);
-		this.$('#filter-status').val(filters.status);
-		this.renderTableRows();
-		return this;
+	View.setTasks = function() {
+		this.setViews(this.collection.map(function(task) {
+			return new TaskItemView({data: {task: task.toJSON()}});
+		}), '#items');
+	};
+
+	View.getValues = function() {
+		return {
+			project: this.getView('#filter-project').getValue(),
+			version: this.getView('#filter-version').getValue(),
+			assignee: this.getView('#filter-assignee').getValue(),
+			status: this.getView('#filter-status').getValue()
+		};
+	};
+
+	View.onProjectChange = function(event) {
+		this.setFilterVersionView();
+		this.render();
+		this.onFilterChange();
+	};
+
+	View.onFilterChange = function(event) {
+		this.navigate('tasks', {qs: this.getValues()});
+	};
+
+	View.onAddTaskClick = function() {
+		this.navigate('tasks/add', {qs: _(this.getValues()).omit('status')});
 	};
 
 	return ParentView.extend(View);

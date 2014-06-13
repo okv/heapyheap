@@ -21,8 +21,9 @@ define([
 			models.tasks.fetch({data: filters, success: function(collection) {
 				self.view = new TasksListView({
 					el: '.main-layout',
-					collection: collection
-				}).render(filters);
+					collection: collection,
+					data: {filters: filters}
+				}).render();
 			// reset collection coz client merge breaks server sorting
 			}, reset: true});
 		});

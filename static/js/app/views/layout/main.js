@@ -1,7 +1,13 @@
 'use strict';
 
-define(['app/views/base'], function(ParentView) {
-	var View = {};
+define([
+	'app/views/base', 'app/templates/layout/main'
+], function(
+	ParentView, template
+) {
+	var View = {
+		template: template
+	};
 
 	View.events = {
 		'click .navi a': 'onNaviClick',
@@ -16,15 +22,6 @@ define(['app/views/base'], function(ParentView) {
 	View.onLogoutClick = function(event) {
 		event.preventDefault();
 		this.app.logout();
-	};
-
-	View.initialize = function() {
-		ParentView.prototype.initialize.apply(this, arguments);
-	};
-
-	View.render = function() {
-		this.$el.html(this._render('layout/main'));
-		return this;
 	};
 
 	return ParentView.extend(View);

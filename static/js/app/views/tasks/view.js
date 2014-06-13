@@ -1,19 +1,24 @@
 'use strict';
 
-define(['app/views/base'], function(ParentView) {
-	var View = {};
+define([
+	'app/views/base', 'app/templates/tasks/view'
+], function(
+	ParentView, template
+) {
+	var View = {
+		template: template
+	};
 
 	View.events = {
-		'click #task-change-status': 'onStatusChange',
-		'click #task-edit': 'onEdit'
+		'click #task-change-status': 'onChangeStatusClick',
+		'click #task-edit': 'onEditClick'
 	};
 
 	View.initialize = function() {
-		ParentView.prototype.initialize.apply(this, arguments);
 		this.listenTo(this.model, 'change:status', this.onModelChange);
 	};
 
-	View.onStatusChange = function() {
+	View.onChangeStatusClick = function() {
 		this.model.set(
 			'status',
 			this.model.get('status') === 'waiting' ? 'in porgress' : 'waiting'
@@ -21,20 +26,16 @@ define(['app/views/base'], function(ParentView) {
 		this.model.save();
 	};
 
-	View.onEdit = function() {
+	View.onEditClick = function() {
 		this.navigate('tasks/' + this.model.get('id') + '/edit');
 	};
 
 	View.onModelChange = function(model) {
-		//TODO: pass to view only changed attributes
-		this.render();
+		this.render({force: true});
 	};
 
-	View.render = function() {
-		this.$el.html(this._render('tasks/view', {
-			task: this.model.toJSON()
-		}));
-		return this;
+	View.getData = function() {
+		return {task: this.model.toJSON()};
 	};
 
 	return ParentView.extend(View);

@@ -1,20 +1,16 @@
 'use strict';
 
-define(['app/views/base'], function(ParentView) {
-	var View = {};
-
-	View.events = {
+define([
+	'app/views/base', 'app/templates/users/list'
+], function(
+	ParentView, template
+) {
+	var View = {
+		template: template
 	};
 
-	View.initialize = function() {
-		ParentView.prototype.initialize.apply(this, arguments);
-	};
-
-	View.render = function() {
-		this.$el.html(this._render('users/list', {
-			users: this.collection.toJSON()
-		}));
-		return this;
+	View.getData = function() {
+		return {users: this.collection.toJSON()};
 	};
 
 	return ParentView.extend(View);

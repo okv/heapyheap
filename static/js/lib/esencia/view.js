@@ -135,9 +135,10 @@ define([
 		return true;
 	};
 
-	View.getHelpers = function() {
-		return {};
-	};
+	/*
+	 * Helpers (Object|Fuction) which will be passed to the template
+	 */
+	View.helpers = {};
 
 	/*
 	 * Render template to $el element
@@ -150,7 +151,7 @@ define([
 			throw new Error('Template should be a function.');
 		}
 
-		data = _(this.getHelpers()).extend(data);
+		data = _(this).chain().result('helpers').extend(data).value();
 
 		// get html
 		var templateHtml = this.template(data);

@@ -4,7 +4,7 @@ define(['esencia/view', 'underscore'], function(ParentView, _) {
 
 	var View = {};
 
-	View.getHelpers = function() {
+	View.helpers = function() {
 		return {
 			_: _,
 			currentUser: this.app.currentUser

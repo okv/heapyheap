@@ -1,4 +1,9 @@
-include ../ctrls/opts
+mixin opts(opts, placeholder, selected)
+	if placeholder
+		option(value="") #{placeholder}
+
+	each opt in opts
+		option(value="#{opt}", selected=(opt === selected)) #{opt}
 
 select
 	mixin opts(params.opts, params.placeholder, params.selected)

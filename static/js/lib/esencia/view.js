@@ -152,7 +152,7 @@
 	/*
 	 * Helpers (Object|Fuction) which will be passed to the template
 	 */
-	View.helpers = {};
+	View.templateHelpers = {};
 
 	/*
 	 * Render template to $el element
@@ -165,7 +165,7 @@
 			throw new Error('Template should be a function.');
 		}
 
-		data = _(this).chain().result('helpers').extend(data).value();
+		data = _(this).chain().result('templateHelpers').extend(data).value();
 
 		// get html
 		var templateHtml = this.template(data);

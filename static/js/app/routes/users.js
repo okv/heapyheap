@@ -8,8 +8,7 @@ define([
 
 	return function(router) {
 
-		var app = router.app,
-			models = app.models;
+		var collections = router.app.collections;
 
 		router.route({
 			url: 'users',
@@ -17,7 +16,7 @@ define([
 			parentName: 'mainLayout'
 		}, function() {
 			var self = this;
-			models.users.fetch({success: function(collection) {
+			collections.users.fetch({success: function(collection) {
 				self.view = new UsersListView({
 					el: '.main-layout',
 					collection: collection

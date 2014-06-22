@@ -36,7 +36,7 @@ define([
 			new SelectView({
 				data: {
 					placeholder: 'Any project',
-					opts: this.app.models.projects.pluck('name'),
+					opts: this.app.collections.projects.pluck('name'),
 					selected: this.data.selected.project
 				}
 			}),
@@ -45,7 +45,7 @@ define([
 	};
 
 	View.setVersionView = function() {
-		var selProject = this.app.models.projects.findWhere({
+		var selProject = this.app.collections.projects.findWhere({
 			name: this.getView('.project').getValue()
 		});
 		this.setView(
@@ -65,7 +65,7 @@ define([
 			new SelectView({
 				data: {
 					placeholder: 'Any assignee',
-					opts: this.app.models.users.pluck('login'),
+					opts: this.app.collections.users.pluck('login'),
 					selected: this.data.selected.assignee
 				}
 			}),

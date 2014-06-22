@@ -8,8 +8,7 @@ define([
 
 	return function(router) {
 
-		var app = router.app,
-			models = app.models;
+		var collections = router.app.collections;
 
 		router.route({
 			url: 'tasks',
@@ -18,7 +17,7 @@ define([
 		}, function(qs) {
 			var self = this,
 				filters = qs || {};
-			models.tasks.fetch({data: filters, success: function(collection) {
+			collections.tasks.fetch({data: filters, success: function(collection) {
 				self.view = new TasksListView({
 					el: '.main-layout',
 					collection: collection,
@@ -32,11 +31,11 @@ define([
 			url: 'tasks/:id',
 			parentName: 'tasksList'
 		}, function(id) {
-			var model = models.tasks.get(id);
+			var model = collections.tasks.get(id);
 			if (!model) {
 				// TODO: add method for instaces creation
-				model = new models.tasks.model({id: id});
-				models.tasks._prepareModel(model);
+				model = new collections.tasks.model({id: id});
+				collections.tasks._prepareModel(model);
 			}
 			// always fetch latest model from server before viewing it
 			model.fetch({success: function(model) {
@@ -48,11 +47,11 @@ define([
 			url: 'tasks/:id/edit',
 			parentName: 'tasksList'
 		}, function(id) {
-			var model = models.tasks.get(id);
+			var model = collections.tasks.get(id);
 			if (!model) {
 				// TODO: add method for instaces creation
-				model = new models.tasks.model({id: id});
-				models.tasks._prepareModel(model);
+				model = new collections.tasks.model({id: id});
+				collections.tasks._prepareModel(model);
 			}
 			model.fetch({success: function(model) {
 				new TasksForm({el: '#task-full', model: model}).render();
@@ -64,8 +63,8 @@ define([
 			parentName: 'tasksList'
 		}, function(qs) {
 			// TODO: add method for instaces creation
-			var model = new models.tasks.model(qs);
-			models.tasks._prepareModel(model);
+			var model = new collections.tasks.model(qs);
+			collections.tasks._prepareModel(model);
 			new TasksForm({el: '#task-full', model: model}).render();
 		});
 

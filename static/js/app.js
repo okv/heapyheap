@@ -29,7 +29,7 @@ require([
 	'app/routes/users',
 	'app/middleware/auth', 'app/middleware/routeRelations',
 	'app/views/base',
-	'app/models/tasks', 'app/models/projects', 'app/models/users',
+	'app/collections/tasks', 'app/collections/projects', 'app/collections/users',
 	'jquery'
 ], function(
 	backbone, _,
@@ -48,6 +48,7 @@ require([
 		var app = {
 			router: new Router(),
 			service: new Service({socket: backbone.io.connect()}),
+			collections: {},
 			models: {},
 			currentUser: storage && storage.currentUser ? JSON.parse(
 				storage.currentUser
@@ -94,14 +95,14 @@ require([
 		// middleware
 		app.router.use(authMiddleware({afterLogin: function(user, next) {
 			// some global initialization after user logged in
-			app.models.tasks = new TasksCollection();
-			app.models.projects = new ProjectsCollection();
-			app.models.users = new UsersCollection();
+			app.collections.tasks = new TasksCollection();
+			app.collections.projects = new ProjectsCollection();
+			app.collections.users = new UsersCollection();
 			next = _.after(2, next);
 			// fetch all models which will be synced in backgroud during all
 			// app life cycle
-			app.models.projects.fetch({success: next});
-			app.models.users.fetch({success: next});
+			app.collections.projects.fetch({success: next});
+			app.collections.users.fetch({success: next});
 		}}));
 		app.router.use(routeRelationsMiddleware());
 

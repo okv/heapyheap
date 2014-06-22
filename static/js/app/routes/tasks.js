@@ -20,7 +20,7 @@ define([
 			collections.tasks.fetch({data: filters, success: function(collection) {
 				self.view = new TasksListView({
 					el: '.main-layout',
-					collection: collection,
+					collections: {tasks: collection},
 					data: {filters: filters}
 				}).render();
 			}});
@@ -30,10 +30,10 @@ define([
 			url: 'tasks/:id',
 			parentName: 'tasksList'
 		}, function(id) {
-			var model = collections.tasks.get(id) ||
+			var task = collections.tasks.get(id) ||
 				collections.tasks.create({id: id}, {local: true});
-			model.fetch({success: function(model) {
-				new TasksView({el: '#task-full', model: model}).render();
+			task.fetch({success: function(model) {
+				new TasksView({el: '#task-full', models: {task: model}}).render();
 			}});
 		});
 
@@ -41,10 +41,10 @@ define([
 			url: 'tasks/:id/edit',
 			parentName: 'tasksList'
 		}, function(id) {
-			var model = collections.tasks.get(id) ||
+			var task = collections.tasks.get(id) ||
 				collections.tasks.create({id: id}, {local: true});
-			model.fetch({success: function(model) {
-				new TasksForm({el: '#task-full', model: model}).render();
+			task.fetch({success: function(model) {
+				new TasksForm({el: '#task-full', models: {task: model}}).render();
 			}});
 		});
 
@@ -52,8 +52,8 @@ define([
 			url: 'tasks/add',
 			parentName: 'tasksList'
 		}, function(qs) {
-			var model = collections.tasks.create(qs, {local: true});
-			new TasksForm({el: '#task-full', model: model}).render();
+			var task = collections.tasks.create(qs, {local: true});
+			new TasksForm({el: '#task-full', models: {task: task}}).render();
 		});
 
 	};

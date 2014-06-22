@@ -19,7 +19,9 @@ define([
 		this.setView(
 			new TaskParamsView({
 				data: {
-					selected: this.model.pick('project', 'version', 'assignee'),
+					selected: this.models.task.pick(
+						'project', 'version', 'assignee'
+					),
 					fields: ['project', 'version', 'assignee']
 				}
 			}),
@@ -29,7 +31,7 @@ define([
 
 	View.onSaveClick = function() {
 		var self = this;
-		this.model
+		this.models.task
 			.set({
 				title: this.$('#title').val(),
 				description: this.$('#description').val(),
@@ -41,7 +43,7 @@ define([
 	};
 
 	View.getData = function() {
-		return {task: this.model.toJSON()};
+		return {task: this.models.task.toJSON()};
 	};
 
 	return ParentView.extend(View);

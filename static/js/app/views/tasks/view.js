@@ -15,19 +15,19 @@ define([
 	};
 
 	View.initialize = function() {
-		this.listenTo(this.model, 'change:status', this.onModelChange);
+		this.listenTo(this.models.task, 'change:status', this.onModelChange);
 	};
 
 	View.onChangeStatusClick = function() {
-		this.model.set(
+		this.models.task.set(
 			'status',
-			this.model.get('status') === 'waiting' ? 'in porgress' : 'waiting'
+			this.models.task.get('status') === 'waiting' ? 'in porgress' : 'waiting'
 		);
-		this.model.save();
+		this.models.task.save();
 	};
 
 	View.onEditClick = function() {
-		this.navigate('tasks/' + this.model.get('id') + '/edit');
+		this.navigate('tasks/' + this.models.task.get('id') + '/edit');
 	};
 
 	View.onModelChange = function(model) {
@@ -35,7 +35,7 @@ define([
 	};
 
 	View.getData = function() {
-		return {task: this.model.toJSON()};
+		return {task: this.models.task.toJSON()};
 	};
 
 	return ParentView.extend(View);

@@ -18,21 +18,21 @@ define([
 
 	View.initialize = function() {
 		var self = this;
-		this.collection.each(function(model) {
+		this.collections.tasks.each(function(model) {
 			self.listenTo(model, 'change:title change:status', function(model) {
 				this.setView(
 					new TaskItemView(
 						{data: {task: model.toJSON()}}
 					),
 					'#items',
-					this.collection.indexOf(model)
+					this.collections.tasks.indexOf(model)
 				);
 				this.render();
 			});
 		});
 		// sync tasks which changed remotely
-		this.listenTo(this.collection, 'backend:update', function(model) {
-			var localModel = this.collection.get(model.id);
+		this.listenTo(this.collections.tasks, 'backend:update', function(model) {
+			var localModel = this.collections.tasks.get(model.id);
 			if (localModel) localModel.set(model);
 		});
 
@@ -41,7 +41,7 @@ define([
 			'#filters'
 		);
 		this.setViews(
-			this.collection.map(function(task) {
+			this.collections.tasks.map(function(task) {
 				return new TaskItemView({data: {task: task.toJSON()}});
 			}),
 			'#items'

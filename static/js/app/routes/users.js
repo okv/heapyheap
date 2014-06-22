@@ -21,7 +21,7 @@ define([
 					el: '.main-layout',
 					collection: collection
 				}).render();
-			}, reset: true});
+			}});
 		});
 
 	};

@@ -86,6 +86,12 @@ exports.bind = function(backend) {
 		);
 	});
 
+	marked.setOptions({
+		highlight: function (code) {
+			return require('highlight.js').highlightAuto(code).value;
+		}
+	});
+
 	var renderer = new marked.Renderer(),
 		checkRegExp = /^ *\[([ vx])\]/,
 		checkedHash = {'v': 1, 'x': 1};

@@ -2,7 +2,8 @@
 
 var Steppy = require('twostep').Steppy,
 	db = require('../db'),
-	helpers = require('../utils/helpers');
+	helpers = require('../utils/helpers'),
+	marked = require('marked');
 
 exports.bind = function(backend) {
 	backend.use('read', function(req, res, next) {
@@ -75,6 +76,7 @@ exports.bind = function(backend) {
 			},
 			function(err, id) {
 				model.id = id;
+				model.descriptionHtml = createHtmlDescription(model.description);
 				db.tasks.put(model, this.slot());
 			},
 			function(err) {
@@ -83,6 +85,10 @@ exports.bind = function(backend) {
 			next
 		);
 	});
+
+	function createHtmlDescription(description) {
+		return marked(description);
+	}
 
 	return backend;
 }

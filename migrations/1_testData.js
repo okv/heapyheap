@@ -31,6 +31,7 @@ exports.migrate = function(client, done) {
 					updateDate: new Date(issue.updated_on).getTime(),
 					title: issue.subject,
 					description: issue.description,
+					descriptionHtml: issue.description,
 					version: issue.fixed_version && issue.fixed_version.name,
 					assignee: assignee && usernameToLogin(assignee),
 					status: statusesHash[issue.status.name] || 'in progress'

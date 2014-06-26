@@ -1,11 +1,22 @@
 
 if task.id
-	div ##{task.id}
-div
-	input#title(type="text", value=task.title, style="width: 80%;")
-div
-	#params
-div
-	textarea#description(style="width: 80%; height: 200px;") #{task.description}
-div
-	button#save Save
+	.form-group
+		p.form-control-static
+			span Now editing task 
+			strong ##{task.id}
+
+.form-group
+	label.form-label(for"title") Task title
+	input.form-control#title(name="title", type="text", value=task.title, style="width: 80%;", placeholder="Enter title")
+
+.form-group
+	label.form-label Select project, version and user
+	.row 
+		#params
+
+.form-group
+	label(for"description") Task description
+	textarea.form-control#description(style="width: 80%; height: 200px;") #{task.description}
+
+.form-group
+	button.btn.btn-primary#save Save task

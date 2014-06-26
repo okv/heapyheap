@@ -4,8 +4,8 @@
 		.task__card__info
 			.task__card__info__tags-l
 				ul.tags
-					li.tags__item #{task.project}
-					li.tags__item #{task.version}
+					li.tags__item.label.label-default #{task.project}
+					li.tags__item.label.label-default #{task.version}
 			.summary
 				.summary__item
 					.summary__item__title assignee
@@ -20,10 +20,11 @@
 		.task__card__controls
 			.task__card__controls__status-l
 				.status-control
-					.status-control__text #{task.status}
 					.status-control__buttons
-						.status-control__buttons__item
-							button#task-change-status.button change status
+						if task.status === 'waiting'
+							button.btn.btn-primary.btn-block#task-change-status.button Waiting...
+						else
+							button.btn.btn-success.btn-block#task-change-status.button In progress...
 			.task__card__controls__timer-l
 				.timers
 					h4.timers__header timers

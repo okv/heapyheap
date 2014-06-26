@@ -36,22 +36,17 @@ body {
 		text-decoration: underline;
 	}
 }
-.tasks__item {
-	min-height: 20px;
-	padding: 2%;
-	cursor: pointer;
-	// margin-bottom: 5px;
-	border-bottom: 1px solid lighten(#1f2cfe, 35%);
+.tasks {
+	.list-group;
 }
-.tasks__item:hover {
-	background: #fefefe;
+.tasks__item {
+	.list-group-item;
 }
 .tasks__item__title {
-	vertical-align: middle;
-	margin-bottom: 7px;
+	.list-group-item-heading;
 }
 .tasks__item__status {
-	vertical-align: middle;
+	.list-group-item-text;
 }
 .main-layout__sidebar__filters-l {
 	margin-bottom: 20px;

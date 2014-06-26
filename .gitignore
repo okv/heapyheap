@@ -2,5 +2,5 @@ node_modules/
 db/
 migrations/.migrations
 static/js/app/templates/
-static/css/**/*.css
+static/css/main.css
 .DS_Store

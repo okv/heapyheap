@@ -1,13 +1,21 @@
-form.pure-form
+form.form
 
 	if _(fields).contains('project')
-		.project
+		.col-md-3
+			.form-group
+				.project
 
 	if _(fields).contains('version')
-		.version
+		.col-md-3
+			.form-group
+				.version
 
 	if _(fields).contains('assignee')
-		.assignee
+		.col-md-3
+			.form-group
+				.assignee
 
 	if _(fields).contains('status')
-		.status
+		.col-md-3
+			.form-group
+				.status

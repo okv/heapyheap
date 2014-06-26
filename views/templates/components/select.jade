@@ -5,5 +5,6 @@ mixin opts(opts, placeholder, selected)
 	each opt in opts
 		option(value="#{opt}", selected=(opt === selected)) #{opt}
 
-select
+
+select(class="form-control")
 	mixin opts(params.opts, params.placeholder, params.selected)

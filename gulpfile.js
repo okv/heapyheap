@@ -13,7 +13,7 @@ gulp.task('runServer', function() {
 });
 
 gulp.task('compileLess', function() {
-	gulp.src('static/css/**/*.less')
+	gulp.src('static/less/main.less')
 		.pipe(less())
 		.pipe(gulp.dest('static/css'))
 });
@@ -32,7 +32,7 @@ gulp.task('default', function() {
 	// run tasks at gulp start
 	gulp.run('runServer', 'compileClientTemplates', 'compileLess');
 	// compile less -> css on file changes
-	gulp.watch(['static/css/**/*.less'], function() {
+	gulp.watch(['static/less/**/*.less'], function() {
 		gulp.run('compileLess');
 	});
 	// restart server on file changes

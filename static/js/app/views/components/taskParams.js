@@ -38,7 +38,8 @@ define([
 					placeholder: 'Any project',
 					opts: this.app.collections.projects.pluck('name'),
 					selected: this.data.selected.project
-				}
+				},
+				class: 'form-control'
 			}),
 			'.project'
 		);

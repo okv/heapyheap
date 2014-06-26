@@ -1,19 +1,27 @@
+.container-fluid
+	.row
+		nav.navbar.navbar-default.navbar-static-top
+			.container-fluid
+				.navbar-header
+					a.navbar-brand(href="/tasks") nevermind
+				ul.nav.navbar-nav
+					li
+						a(href="/tasks") Tasks
+					li
+						a(href="/users") Users
 
-.header
-	.header__left
-		.current-timer-info
-			.current-timer-info__part
-				.link(href="javascript:void(0)") #123
-			.current-timer-info__part
-				include ../ctrls/timer
-	.header__right
-		.link(href="javascript:void(0)")
-			| #{currentUser.login} 
-			span#logout-link logout
+				.navbar-text.navbar-right
+					a(href="javascript:void(0)")
+						span #{currentUser.login} 
+						span#logout-link logout
 
-	.navi
-		a(href="/tasks") Tasks
-		span &nbsp
-		a(href="/users") Users
+				.navbar-text.navbar-right
+					.current-timer-info
+						.current-timer-info__part
+							.link(href="javascript:void(0)") #123
+						.current-timer-info__part
+							include ../ctrls/timer
 
-.main-layout
+				button.navbar-btn.navbar-right.btn.btn-primary#task-add Create task
+	.row
+		.main-layout

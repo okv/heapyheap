@@ -11,7 +11,8 @@ define([
 
 	View.events = {
 		'click .navi a': 'onNaviClick',
-		'click #logout-link': 'onLogoutClick'
+		'click #logout-link': 'onLogoutClick',
+		'click #task-add': 'onAddTaskClick'
 	};
 
 	View.onNaviClick = function(event) {
@@ -22,6 +23,12 @@ define([
 	View.onLogoutClick = function(event) {
 		event.preventDefault();
 		this.app.logout();
+	};
+
+	View.onAddTaskClick = function() {
+		this.navigate('tasks/add', {
+			qs: _(this.helpers.getQs()).pick('project', 'version', 'assignee')
+		});
 	};
 
 	return ParentView.extend(View);

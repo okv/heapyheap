@@ -12,8 +12,7 @@ define([
 	};
 
 	View.events = {
-		'view:change #filters': 'onFilterChange',
-		'click #task-add': 'onAddTaskClick'
+		'view:change #filters': 'onFilterChange'
 	};
 
 	View.initialize = function() {
@@ -54,10 +53,6 @@ define([
 
 	View.onFilterChange = function(event) {
 		this.navigate('tasks', {qs: this.getValue()});
-	};
-
-	View.onAddTaskClick = function() {
-		this.navigate('tasks/add', {qs: _(this.getValue()).omit('status')});
 	};
 
 	return ParentView.extend(View);

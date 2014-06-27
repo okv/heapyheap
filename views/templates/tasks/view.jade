@@ -1,7 +1,7 @@
 .task
 	h2.tasks__header ##{task.id} #{task.title}
-	.task__card
-		.task__card__info
+	.task__card.row
+		.task__card__info.col-md-8
 			.task__card__info__tags-l
 				ul.tags
 					li.tags__item.label.label-default #{task.project}
@@ -17,24 +17,33 @@
 				.summary__item
 					.summary__item__title updated at
 					.summary__item__value #{new Date(task.updateDate)}
-		.task__card__controls
+		.task__card__controls.col-md-4
 			.task__card__controls__status-l
 				.status-control
+					h3.status-control__time 
+						small spended&nbsp;
+						| 12:20:23
 					.status-control__buttons
-						if task.status === 'waiting'
-							button.btn.btn-primary.btn-block#task-change-status.button Waiting...
-						else
-							button.btn.btn-success.btn-block#task-change-status.button In progress...
-			.task__card__controls__timer-l
-				.timers
-					h4.timers__header timers
-					.timers__item
-						include ../ctrls/timer
-					.timers__item
-						.timer
-							.timer__time 00:15
-							.timer__content
-								a.link Иван Иванов
+						.status-control__buttons__item
+							if task.status === 'waiting'
+								button.btn-block.btn-sm.btn.btn-primary.btn-outline#task-change-status.button Start
+							else
+								button.btn-block.btn-sm.btn.btn-danger.btn-outline#task-change-status.button Stop
+						.status-control__buttons__item
+							if task.status === 'waiting'
+								button.btn-block.btn-sm.btn.btn-primary.btn-outline#task-change-status.button Resume
+							else
+								button.btn-block.btn-sm.btn.btn-success.btn-outline#task-change-status.button Pause
+			//-.task__card__controls__timer-l
+				//-.timers
+					//-h4.timers__header timers
+					//-.timers__item
+						//-include ../ctrls/timer
+					//-.timers__item
+						//-.timer
+							//-.timer__time 00:15
+							//-.timer__content
+								//-a.link Иван Иванов
 
 	.task__description
 		p !{task.descriptionHtml}

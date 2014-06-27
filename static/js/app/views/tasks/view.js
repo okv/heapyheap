@@ -11,11 +11,16 @@ define([
 
 	View.events = {
 		'click #task-change-status': 'onChangeStatusClick',
+		'click #task-change-timer': 'onChangeTimerClick',
 		'click #task-edit': 'onEditClick'
 	};
 
 	View.initialize = function() {
 		this.listenTo(this.models.task, 'change:status', this.onModelChange);
+	};
+
+	View.onChangeTimerClick = function() {
+		console.log('timer click');
 	};
 
 	View.onChangeStatusClick = function() {

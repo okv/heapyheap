@@ -3,7 +3,8 @@
 var Steppy = require('twostep').Steppy,
 	db = require('../db'),
 	helpers = require('../utils/helpers'),
-	marked = require('marked');
+	marked = require('marked'),
+	backends = require('./index');
 
 exports.bind = function(backend) {
 	backend.use('read', function(req, res, next) {
@@ -68,22 +69,61 @@ exports.bind = function(backend) {
 				model.updateDate = Date.now();
 				if (model.id) {
 					this.pass(model.id);
+					db.tasks.get({id: model.id}, this.slot());
 				} else {
 					model.createDate = model.updateDate;
 					model.status = 'waiting';
 					db.tasks.getNextId(this.slot());
 				}
 			},
-			function(err, id) {
+			function(err, id, prevTask) {
+				this.pass(prevTask);
 				model.id = id;
 				model.descriptionHtml = createHtmlDescription(model.description);
 				db.tasks.put(model, this.slot());
+			},
+			function(err, prevTask) {
+				this.pass(null);
+				if (prevTask) {
+					var text = '';
+					['title', 'status'].forEach(function(field) {
+						if (model[field] !== prevTask[field]) {
+							text += 'Task ' + field + ' changed from "' +
+								prevTask[field] + '" to "' + model[field] + '"\n';
+						}
+					});
+					if (text) putComment(model.id, text, this.slot());
+				}
 			},
 			function(err) {
 				res.end(model);
 			},
 			next
 		);
+
+		function putComment(taskId, text, callback) {
+			Steppy(
+				function() {
+					db.comments.getNextId(this.slot());
+				},
+				function(err, id) {
+					var comment = {
+						id: id,
+						taskId: taskId,
+						author: req.user.login,
+						createDate: Date.now(),
+						text: text
+					};
+					this.pass(comment);
+					db.comments.put(comment, this.slot());
+				},
+				function(err, comment) {
+					backends.comments.emit('created', comment);
+					this.pass(null);
+				},
+				callback
+			);
+		}
 	});
 
 	marked.setOptions({

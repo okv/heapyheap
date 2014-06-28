@@ -7,6 +7,9 @@ var gulp = require('gulp'),
 	wrapAmd = require('gulp-wrap-amd');
 
 var server = null;
+process.on('uncaughtException', function(err) {
+	console.error(err.stack || err);
+});
 gulp.task('runServer', function() {
 	if (server) server.kill();
 	server = spawn('node', ['app.js'], {stdio: 'inherit'});

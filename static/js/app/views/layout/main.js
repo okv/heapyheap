@@ -10,14 +10,15 @@ define([
 	};
 
 	View.events = {
-		'click .nav a': 'onNaviClick',
+		'click [data-action=navigate]': 'onNavClick',
 		'click #logout-link': 'onLogoutClick',
 		'click #task-add': 'onAddTaskClick'
 	};
 
-	View.onNaviClick = function(event) {
+	View.onNavClick = function(event) {
 		event.preventDefault();
-		this.navigate(this.$(event.currentTarget).attr('href'));
+		var $nav = this.$(event.currentTarget);
+		this.navigate($nav.attr('href') || $nav.data('href'));
 	};
 
 	View.onLogoutClick = function(event) {

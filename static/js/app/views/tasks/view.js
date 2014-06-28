@@ -12,8 +12,7 @@ define([
 	};
 
 	View.events = {
-		'click #task-change-status': 'onChangeStatusClick',
-		'click #task-edit': 'onEditClick'
+		'click #task-change-status': 'onChangeStatusClick'
 	};
 
 	View.initialize = function() {
@@ -57,10 +56,6 @@ define([
 			this.models.task.get('status') === 'waiting' ? 'in porgress' : 'waiting'
 		);
 		this.models.task.save();
-	};
-
-	View.onEditClick = function() {
-		this.navigate('tasks/' + this.models.task.get('id') + '/edit');
 	};
 
 	View.onModelChange = function(model) {

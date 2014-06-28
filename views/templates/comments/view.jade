@@ -1,3 +1,4 @@
 div
-	span #{comment.author}: 
-	span !{comment.text}
+	a(href='/users/' + comment.author, data-action='navigate') #{comment.author} 
+	span wrote at #{new Date(comment.createDate)}
+	div !{comment.text}

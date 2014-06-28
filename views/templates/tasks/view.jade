@@ -48,7 +48,7 @@
 	.task__description
 		p !{task.descriptionHtml}
 
-	button.btn.btn-primary#task-edit.button Edit this task
+	button#task-edit.btn.btn-primary.button(data-href='/tasks/' + task.id + '/edit', data-action="navigate") Edit this task
 
 	#comments
 

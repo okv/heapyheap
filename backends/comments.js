@@ -20,16 +20,15 @@ exports.bind = function(backend) {
 		}
 	});
 
-	backend.use('create', 'update', function(req, res, next) {
+	backend.use('create', function(req, res, next) {
 		var comment = req.model;
 		Steppy(
 			function() {
-				comment.updateDate = Date.now();
 				if (comment.id) {
 					this.pass(comment.id);
 				} else {
 					comment.author = req.user.login;
-					comment.createDate = comment.updateDate;
+					comment.createDate = Date.now();
 					db.comments.getNextId(this.slot());
 				}
 			},

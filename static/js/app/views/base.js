@@ -1,6 +1,10 @@
 'use strict';
 
-define(['esencia/view', 'underscore'], function(ParentView, _) {
+define([
+	'backbone', 'underscore', 'esencia/view'
+], function(
+	backbone, _, ParentView
+) {
 
 	var View = {};
 
@@ -8,7 +12,7 @@ define(['esencia/view', 'underscore'], function(ParentView, _) {
 
 	View.helpers.getQs = function(url) {
 		url = url || window.location.href;
-		return Backbone.History.prototype.getQueryParameters(url);
+		return backbone.History.prototype.getQueryParameters(url);
 	};
 
 	View.templateHelpers = function() {

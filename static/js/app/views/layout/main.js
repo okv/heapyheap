@@ -1,16 +1,16 @@
 'use strict';
 
 define([
-	'app/views/base', 'app/templates/layout/main'
+	'underscore', 'app/views/base', 'app/templates/layout/main'
 ], function(
-	ParentView, template
+	_, ParentView, template
 ) {
 	var View = {
 		template: template
 	};
 
 	View.events = {
-		'click .navi a': 'onNaviClick',
+		'click .nav a': 'onNaviClick',
 		'click #logout-link': 'onLogoutClick',
 		'click #task-add': 'onAddTaskClick'
 	};

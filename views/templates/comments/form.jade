@@ -1,3 +1,5 @@
-div
-	textarea.comment-text #{comment.text}
-	buttom.btn.comment-send Send
+.form
+	.form-group
+		textarea.form-control.comment-text(rows="6") #{comment.text}
+	.form-group
+		button.btn.btn-primary.comment-send(disabled="disabled") Send

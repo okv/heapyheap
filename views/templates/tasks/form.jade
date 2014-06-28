@@ -16,7 +16,7 @@ if task.id
 
 .form-group
 	label(for"description") Task description
-	textarea.form-control#description(style="width: 80%; height: 200px;") #{task.description}
+	textarea.form-control#description(style="width: 80%;", rows="15") #{task.description}
 
 .form-group
 	button.btn.btn-primary#save Save task

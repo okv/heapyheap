@@ -8,6 +8,7 @@ var nlevel = require('nlevel'),
 
 exports.tasks = new nlevel.DocsSection(ldb, 'tasks', {
 	projections: [
+		{key: {createDate: 1}},
 		// some combinations with `order` goes first for sort by
 		// reversed update date when some parameters are not set
 		{key: {project: 1, order: order, id: 1}, value: pickId},
@@ -32,8 +33,8 @@ exports.tasks = new nlevel.DocsSection(ldb, 'tasks', {
 exports.tasks.getNextId = getNextId;
 
 function getNextId(callback) {
-	this.find({by: 'id', limit: 1, reverse: true}, function(err, docs) {
-		callback(err, !err && ++docs[0].id);
+	this.find({start: {createDate: ''}, limit: 1, reverse: true}, function(err, docs) {
+		callback(err, !err && docs[0] && ++docs[0].id || 1);
 	});
 }
 
@@ -67,3 +68,12 @@ function omitPassword(doc) {
 }
 
 exports.tokens = new nlevel.DocsSection(ldb, 'tokens', {});
+
+exports.comments = new nlevel.DocsSection(ldb, 'comments', {
+	projections: [
+		{key: {createDate: 1}},
+		{key: {taskId: 1, createDate: 1}}
+	]
+});
+
+exports.comments.getNextId = getNextId;

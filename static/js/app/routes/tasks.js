@@ -1,9 +1,11 @@
 'use strict';
 
 define([
-	'app/views/tasks/list', 'app/views/tasks/view', 'app/views/tasks/form'
+	'underscore', 'app/views/tasks/list', 'app/views/tasks/view',
+	'app/views/tasks/form', 'app/collections/comments'
 ], function(
-	TasksListView, TasksView, TasksForm
+	_, TasksListView, TasksView,
+	TasksForm, CommentsCollection
 ) {
 
 	return function(router) {
@@ -31,10 +33,17 @@ define([
 			parentName: 'tasksList'
 		}, function(id) {
 			var task = collections.tasks.get(id) ||
-				collections.tasks.create({id: id}, {local: true});
-			task.fetch({success: function(model) {
-				new TasksView({el: '#task-full', models: {task: model}}).render();
-			}});
+				collections.tasks.create({id: id}, {local: true}),
+				comments = new CommentsCollection();
+			var callback = _.after(2, function() {
+				new TasksView({
+					el: '#task-full',
+					models: {task: task},
+					collections: {comments: comments}
+				}).render();
+			});
+			task.fetch({success: callback});
+			comments.fetch({data: {taskId: id}, success: callback});
 		});
 
 		router.route({

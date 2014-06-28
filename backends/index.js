@@ -7,7 +7,8 @@ var backboneio = require('backbone.io'),
 var backends = {
 	tasks: require('./tasks'),
 	projects: require('./projects'),
-	users: require('./users')
+	users: require('./users'),
+	comments: require('./comments')
 };
 
 for (var name in backends) {

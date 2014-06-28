@@ -20,9 +20,7 @@ define([
 		this.collections.tasks.each(function(model) {
 			self.listenTo(model, 'change:title change:status', function(model) {
 				this.setView(
-					new TaskItemView(
-						{data: {task: model.toJSON()}}
-					),
+					new TaskItemView({data: {task: model.toJSON()}}),
 					'#items',
 					this.collections.tasks.indexOf(model)
 				);

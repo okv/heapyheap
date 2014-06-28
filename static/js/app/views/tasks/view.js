@@ -18,7 +18,11 @@ define([
 	View.initialize = function() {
 		this.listenTo(this.models.task, 'change:status', this.onModelChange);
 		this.setComments();
-		this.setCommentsForm();
+		this.setCommentForm();
+	};
+
+	View.setComments = function() {
+		// keep sync with remote backend (comments collection is bound to backend)
 		this.listenTo(this.collections.comments, 'add', function(model) {
 			this.appendView(
 				new CommentView({models: {comment: model}}),
@@ -26,15 +30,13 @@ define([
 			);
 			this.render();
 		});
-	};
-
-	View.setComments = function() {
+		// add view for existing comments
 		this.setViews(this.collections.comments.map(function(comment) {
 			return new CommentView({models: {comment: comment}});
 		}), '#comments');
 	};
 
-	View.setCommentsForm = function() {
+	View.setCommentForm = function() {
 		var comment = this.collections.comments.create({
 			taskId: this.models.task.get('id')
 		}, {local: true});
@@ -43,7 +45,7 @@ define([
 		this.listenTo(comment, 'sync', function(model) {
 			this.appendView(new CommentView({models: {comment: model}}), '#comments');
 			this.stopListening(comment);
-			this.setCommentsForm();
+			this.setCommentForm();
 			this.render();
 			commentFormView.focus();
 		});

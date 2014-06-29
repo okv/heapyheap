@@ -30,9 +30,36 @@ exports.tasks = new nlevel.DocsSection(ldb, 'tasks', {
 	]
 });
 
-exports.tasks.getNextId = getNextId;
+exports.tasks.idGenerator = getNextId;
+
+// TODO: move to nlevel
+var superPut = nlevel.DocsSection.prototype.put;
+nlevel.DocsSection.prototype.put = function(docs, callback) {
+	var self = this;
+	if (!Array.isArray(docs)) docs = [docs];
+	if (this.idGenerator && docs[0] && 'id' in docs[0] === false) {
+		if (docs.every(function(doc) { return 'id' in doc === false; })) {
+			this.idGenerator(function(err, id) {
+				if (err) return callback(err);
+				docs.forEach(function(doc) {
+					doc.id = id;
+					id++;
+				});
+				superPut.call(self, docs, callback);
+			});
+		} else {
+			return callback(new Error(
+				'Documents with id and without should not be ' +
+				'mixed on put when id generator is set'
+			));
+		}
+	} else {
+		return superPut.call(this, docs, callback);
+	}
+};
 
 function getNextId(callback) {
+	// TODO: check default start and how `by` is working
 	this.find({start: {createDate: ''}, limit: 1, reverse: true}, function(err, docs) {
 		callback(err, !err && docs[0] && ++docs[0].id || 1);
 	});
@@ -75,5 +102,4 @@ exports.comments = new nlevel.DocsSection(ldb, 'comments', {
 		{key: {taskId: 1, createDate: 1}}
 	]
 });
-
-exports.comments.getNextId = getNextId;
+exports.comments.idGenerator = getNextId;

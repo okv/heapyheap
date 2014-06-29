@@ -24,16 +24,8 @@ exports.bind = function(backend) {
 		var comment = req.model;
 		Steppy(
 			function() {
-				if (comment.id) {
-					this.pass(comment.id);
-				} else {
-					comment.author = req.user.login;
-					comment.createDate = Date.now();
-					db.comments.getNextId(this.slot());
-				}
-			},
-			function(err, id) {
-				comment.id = id;
+				comment.author = req.user.login;
+				comment.createDate = Date.now();
 				db.comments.put(comment, this.slot());
 			},
 			function(err) {

@@ -68,22 +68,19 @@ exports.bind = function(backend) {
 			function() {
 				model.updateDate = Date.now();
 				if (model.id) {
-					this.pass(model.id);
 					db.tasks.get({id: model.id}, this.slot());
 				} else {
+					this.pass(null);
 					model.createDate = model.updateDate;
 					model.status = 'waiting';
-					db.tasks.getNextId(this.slot());
 				}
 			},
-			function(err, id, prevTask) {
+			function(err, prevTask) {
 				this.pass(prevTask);
-				model.id = id;
 				model.descriptionHtml = createHtmlDescription(model.description);
 				db.tasks.put(model, this.slot());
 			},
 			function(err, prevTask) {
-				this.pass(null);
 				if (prevTask) {
 					var text = '';
 					['title', 'status'].forEach(function(field) {
@@ -92,38 +89,26 @@ exports.bind = function(backend) {
 								prevTask[field] + '" to "' + model[field] + '"\n';
 						}
 					});
-					if (text) putComment(model.id, text, this.slot());
+					if (text) {
+						var comment = {
+							taskId: model.id,
+							author: req.user.login,
+							createDate: Date.now(),
+							text: text
+						};
+						this.pass(comment);
+						db.comments.put(comment, this.slot());
+					}
+				} else {
+					this.pass(null);
 				}
 			},
-			function(err) {
+			function(err, comment) {
+				if (comment) backends.comments.emit('created', comment);
 				res.end(model);
 			},
 			next
 		);
-
-		function putComment(taskId, text, callback) {
-			Steppy(
-				function() {
-					db.comments.getNextId(this.slot());
-				},
-				function(err, id) {
-					var comment = {
-						id: id,
-						taskId: taskId,
-						author: req.user.login,
-						createDate: Date.now(),
-						text: text
-					};
-					this.pass(comment);
-					db.comments.put(comment, this.slot());
-				},
-				function(err, comment) {
-					backends.comments.emit('created', comment);
-					this.pass(null);
-				},
-				callback
-			);
-		}
 	});
 
 	marked.setOptions({

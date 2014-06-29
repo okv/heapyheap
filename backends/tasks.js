@@ -63,35 +63,35 @@ exports.bind = function(backend) {
 	});
 
 	backend.use('create', 'update', function(req, res, next) {
-		var model = req.model;
+		var task = req.model;
 		Steppy(
 			function() {
-				model.updateDate = Date.now();
-				if (model.id) {
-					db.tasks.get({id: model.id}, this.slot());
+				task.updateDate = Date.now();
+				if (task.id) {
+					db.tasks.get({id: task.id}, this.slot());
 				} else {
 					this.pass(null);
-					model.createDate = model.updateDate;
-					model.status = 'waiting';
+					task.createDate = task.updateDate;
+					task.status = 'waiting';
 				}
 			},
 			function(err, prevTask) {
 				this.pass(prevTask);
-				model.descriptionHtml = createHtmlDescription(model.description);
-				db.tasks.put(model, this.slot());
+				task.descriptionHtml = createHtmlDescription(task.description);
+				db.tasks.put(task, this.slot());
 			},
 			function(err, prevTask) {
 				if (prevTask) {
 					var text = '';
 					['title', 'status'].forEach(function(field) {
-						if (model[field] !== prevTask[field]) {
+						if (task[field] !== prevTask[field]) {
 							text += 'Task ' + field + ' changed from "' +
-								prevTask[field] + '" to "' + model[field] + '"\n';
+								prevTask[field] + '" to "' + task[field] + '"\n';
 						}
 					});
 					if (text) {
 						var comment = {
-							taskId: model.id,
+							taskId: task.id,
 							author: req.user.login,
 							createDate: Date.now(),
 							text: text
@@ -105,7 +105,7 @@ exports.bind = function(backend) {
 			},
 			function(err, comment) {
 				if (comment) backends.comments.emit('created', comment);
-				res.end(model);
+				res.end(task);
 			},
 			next
 		);

@@ -98,6 +98,8 @@ exports.bind = function(backend) {
 						};
 						this.pass(comment);
 						db.comments.put(comment, this.slot());
+					} else {
+						this.pass(null);
 					}
 				} else {
 					this.pass(null);

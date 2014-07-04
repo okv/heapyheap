@@ -1,9 +1,12 @@
 
-div(style="padding: 200px 200px 0px 250px;")
-	form.pure-form.pure-form-stacked
-		fieldset
-			legend Please enter login and password
-			input#login(type='text', placeholder='Login')
-			input#password(type='password', placeholder='Password')
-			button#login-button.pure-button.pure-button-primary(type='button') Login
-		.errors
+.row(style="margin-top: 5em;")
+	.col-md-4.col-md-offset-4
+		.form
+			label.form-label Please enter login and password
+			.form-group
+				input#login(type="text", placeholder="Login").form-control
+			.form-group
+				input#password(type="password", placeholder="Password").form-control
+			div.errors.text-danger
+			.form-group
+				button#login-button.btn.btn-primary.form-control(type="button") Login
